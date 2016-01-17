@@ -1,7 +1,7 @@
-# STM32 Development Environment
+# ARM Wiz
 
 ## Overview
-The goal of this project is to create a system that easily generates STM32 ARM microcontroller projects using command line tools. This is a fork of [Iztok Starc's original repository](https://github.com/istarc/stm32) and at this point is entirely Iztok's work. Over time we hope to extend his project and generalize the system to support additional microcontroller and boards beyond the STM32F4-Discovery board.
+The goal of the ARM Wiz project is to create a system that easily generates STM32 ARM microcontroller projects using command line tools. This is a fork of [Iztok Starc's original repository](https://github.com/istarc/stm32) and at this point is entirely Iztok's work. Over time we hope to extend his project and generalize the system to support additional microcontroller and boards beyond the STM32F4-Discovery board.
 
 ## File Organization
 
