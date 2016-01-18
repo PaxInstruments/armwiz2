@@ -80,7 +80,7 @@ function deployMbed () {
   
   	cp -RL $MBED_DIR $(pwd)/$1/lib/mbed
   	if [[ "$MBED_LINKER_SCRIPT" ]] ; then
-		cp `find $MBED_DIR | grep "$MBED_LINKER_SCRIPT"` $1/$MBED_LINKER_SCRIPT
+		cp `find $MBED_DIR | grep "$MBED_LINKER_SCRIPT" | head -1` $(pwd)/$1/$MBED_LINKER_SCRIPT
 	fi
 }
 
@@ -142,9 +142,9 @@ function help () {
 }
 
 function debug () {
-	echo "output project = $projectname"
-	echo "target = $targetname"
-	echo "MBED_LINKER_SCRIPT = $MBED_LINKER_SCRIPT" 
+	printf "output project = $projectname"
+	printf "target = $targetname"
+	printf "MBED_LINKER_SCRIPT = $MBED_LINKER_SCRIPT" 
 }
 ##### Main
 
@@ -185,7 +185,8 @@ done
 if [[ $targetname ]] ; then
 	printf "Setting $targetname parameters... "
 	setTargetParameters $targetname
-	printf "OK\n"
+	# TODO implement error checking here. Throw error if the target is not valid
+		printf "OK\n"
 fi
 if [[ $projectname ]] ; then
 	printf "Creating $projectname directory tree... "
