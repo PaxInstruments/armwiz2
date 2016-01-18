@@ -23,6 +23,10 @@ function freertos {
     echo "TODO implement freertos"
 }
 
+function targets {
+	# List all available targets
+	echo "No available targets"
+}
 
 function template {
     # TODO implement template
@@ -47,8 +51,11 @@ function help {
     echo ""
     echo "OPTIONS:"
     echo "  -p | --projectname      Use configuration <projectname>"
-    echo "       --mbed              Include mbed libraries"
-    echo "       --freertos          Include FreeRTOS libraries"
+    echo "       --mbed             Include mbed libraries"
+    echo "       --freertos         Include FreeRTOS libraries"
+    echo "  -t | --target           Use configuration <targetname>"
+    echo "       --targets          List all available targets"
+    echo "                          -t <targetname>"
     echo "  -h | --help             Print this menu"
     echo ""
     echo "EXAMPELS"
@@ -79,6 +86,10 @@ while : ; do
       		shift
       		# TODO throw error if the next argument is another command flag
           	target=$1
+           	;;
+        --targets )
+      		targets
+      		exit
            	;;
         --mbed )
         	mbed=1
