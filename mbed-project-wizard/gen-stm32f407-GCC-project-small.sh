@@ -66,40 +66,6 @@ if [[ "$1" == "link" ]]; then
 fi
 }
 
-##
-# Deploy FreeRTOS and tailor to fit STM32F4XX and GCC
-do_deploy_safertos()
-{
-if [[ "$1" == "link" ]]; then
-	cp -sR $SAFERTOS $(pwd)/lib/SafeRTOS
-else
-	cp -LR $SAFERTOS $(pwd)/lib/SafeRTOS
-fi
-# Prune targets not(STM32F4XX or GCC)
-find $(pwd)/lib/SafeRTOS -mindepth 1 -maxdepth 1 -not -name 'src' -exec rm -rf {} \;
-find $(pwd)/lib/SafeRTOS/src -mindepth 1 -maxdepth 1 -name 'source' -exec rm -rf {} \;
-# Deploy demo application
-if [[ "$1" == "link" ]]; then
-	cp -sR $SAFERTOS/src/source/* $(pwd)/src
-	ln -s $SAFERTOS/SafeRTOS_STM32F407VG_FLASH.ld stm32f407.ld
-	# Patch copy of main.c (Header files are case sensitive in Linux)
-	rm -f $(pwd)/src/main.c
-	cp -L $SAFERTOS/src/source/main.c $(pwd)/src/main.c
-	chmod a+wr $(pwd)/src/main.c
-	patch -p0 < $SCRIPTDIR/safertos/safertos.patch
-	# Remove test stub
-	rm $(pwd)/lib/SafeRTOS/src/common/comtest.c
-else
-	cp -LR $SAFERTOS/src/source/* $(pwd)/src
-	cp $SAFERTOS/SafeRTOS_STM32F407VG_FLASH.ld stm32f407.ld
-fi
-if [[ "$1" == "link" ]]; then
-	# Abs to Rel Symlinks
-	symlinks -rc $(pwd) 1>/dev/null
-fi
-}
-
-
 case "$1" in
   mbed-none)
 	echo "Project template created by ${0##*/} $1" > $(pwd)/README
