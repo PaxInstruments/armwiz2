@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# armwiz ARM project generator
+
+##### Constants
+
+ARMWIZ_COMMAND="armwiz"
+ARMWIZ_NAME="ArmWiz"
+ARMWIZ_VERSION=0.0.1
+
+##### Functions
+
+function mbed {
+	# TODO implement mbed
+    echo "TODO implement mbed"
+}
+
+
+function freertos {
+	# TODO implement freertos
+    echo "TODO implement freertos"
+}
+
+
+function template {
+    # TODO implement template
+    echo "TODO implement template"
+}
+
+function usage {
+	# Print usage information to std
+    echo "USAGE: $ARMWIZ_COMMAND [options]"
+    echo "       $ARMWIZ_COMMAND [[[-p <projectname> ] [-i]] | [-h]]"
+    echo ""
+    echo "For more detailed usage information type"
+    echo "       $ARMWIZ_COMMAND --help"
+}
+
+function help {
+	# Print help information to std
+	echo "OVERVIEW: $ARMWIZ_NAME ARM project generator"
+	echo ""
+    echo "USAGE: $ARMWIZ_COMMAND [options]"
+    echo "       $ARMWIZ_COMMAND [[[-p <projectname> ] [-i]] | [-h]]"
+    echo ""
+    echo "OPTIONS:"
+    echo "  -p | --projectname      Use configuration <projectname>"
+    echo "       --mbed              Include mbed libraries"
+    echo "       --freertos          Include FreeRTOS libraries"
+    echo "  -h | --help             Print this menu"
+    echo ""
+    echo "EXAMPELS"
+    echo "  To create a project named myProject that uses the mbed abstraction"
+    echo "  libraries and the FreeRTOS real time operating:"
+    echo ""
+    echo "    $ARMWIZ_COMMAND --freertos --mbed -p myProject"
+    echo ""
+    echo "  $ARMWIZ_NAME version $ARMWIZ_VERSION"
+}
+
+##### Main
+
+while : ; do
+    case $1 in
+        -p | --projectname )
+      		shift
+      		# TODO throw error if the next argument is another command flag
+          	projectname=$1
+           	;;
+        -t | --target )
+      		shift
+      		# TODO throw error if the next argument is another command flag
+          	target=$1
+           	;;
+        --mbed )
+        	mbed=1
+           	;;
+        --freertos )
+			freertos=1
+            ;;
+        -h | --help )
+			help
+            exit
+            ;;
+        * )
+			usage
+            exit 1
+    esac
+    shift
+    [[ "$1" != "" ]] || break
+done
+
+echo "output project = $projectname"
+echo "target = $target"
