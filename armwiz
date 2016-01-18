@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # armwiz ARM project generator
 
@@ -7,6 +7,8 @@
 ARMWIZ_COMMAND="armwiz"
 ARMWIZ_NAME="ArmWiz"
 ARMWIZ_VERSION=0.0.1
+
+DEBUG=1
 
 ##### Functions
 
@@ -58,6 +60,12 @@ function help {
     echo "  $ARMWIZ_NAME version $ARMWIZ_VERSION"
 }
 
+function debug {
+	echo "output project = $projectname"
+	echo "target = $target"
+	echo "$(mbed)"
+	echo "$(freertos)"
+}
 ##### Main
 
 while : ; do
@@ -90,5 +98,6 @@ while : ; do
     [[ "$1" != "" ]] || break
 done
 
-echo "output project = $projectname"
-echo "target = $target"
+if [[ $DEBUG == 1 ]] ; then
+	echo "$(debug)"
+fi
