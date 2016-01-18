@@ -4,7 +4,10 @@
 
 #set -e
 
-#source armwiz.config
+# Import target parameter function
+# Contains the following variables
+# MBED_LINKER_SCRIPT
+source armwiz.config
 
 ##### Constants
 
@@ -17,7 +20,7 @@ MBED_DIR=$BASE_DIR/mbed/libraries/mbed
 FREERTOS_DIR=$BASE_DIR/freertos/FreeRTOS
 
 # TODO Make this happen in a config file
-LINKER_SCRIPT=STM32F407.ld
+# MBED_LINKER_SCRIPT=""
 
 
 DEBUG=1
@@ -70,11 +73,20 @@ function makeProjectDirectory () {
 }
 
 function deployMbed () {
-  # Copy mbed library into the project
+  	# Copy mbed library into the project
+  	# Takes projectname as an argument
+  
+  	cp -RL $MBED_DIR $(pwd)/$1/lib/mbed
+  	if [[ "$MBED_LINKER_SCRIPT" ]] ; then
+		cp `find $MBED_DIR | grep "$MBED_LINKER_SCRIPT"` $1/$MBED_LINKER_SCRIPT
+	fi
+}
+
+function deployFreeRTOS () {
+  # Copy FreeRTOS library into the project
   # Takes projectname as an argument
   
-  cp -RL $MBED_DIR $(pwd)/$1/lib/mbed
-  cp `find $MBED_DIR/. | grep "$LINKER_SCRIPT"` $1/$LINKER_SCRIPT
+  cp -RL $FREERTOS_DIR $(pwd)/$1/lib/freertos
 }
 
 function usage () {
@@ -86,11 +98,11 @@ function usage () {
   echo "       $ARMWIZ_COMMAND --help"
 }
 
-function deployFreeRTOS () {
-  # Copy FreeRTOS library into the project
-  # Takes projectname as an argument
-  
-  cp -RL $FREERTOS_DIR $(pwd)/$1/lib/freertos
+function setTargetParameters () {
+	# Sets the target parameters acording to --target <targetname>
+	# Takes targetname as input
+	#MBED_LINKER_SCRIPT="$1"
+	setTargetParametersFromList $1
 }
 
 function usage () {
@@ -129,7 +141,8 @@ function help () {
 
 function debug () {
 	echo "output project = $projectname"
-	echo "target = $target"
+	echo "target = $targetname"
+	echo "MBED_LINKER_SCRIPT = $MBED_LINKER_SCRIPT" 
 }
 ##### Main
 
@@ -143,11 +156,7 @@ while : ; do
         -t | --target )
       		shift
       		# TODO throw error if the next argument is another command flag
-          	target=$1
-           	;;
-        --targets )
-      		targets
-      		exit
+          	targetname=$1
            	;;
         --mbed )
         	mbed=1
@@ -155,6 +164,10 @@ while : ; do
         --freertos )
 			freertos=1
             ;;
+        --targets )
+      		targets
+      		exit
+           	;;
         -h | --help )
 			help
             exit
@@ -167,6 +180,9 @@ while : ; do
     [[ "$1" != "" ]] || break
 done
 
+if [[ $targetname ]] ; then
+	setTargetParameters $targetname
+fi
 if [[ $projectname ]] ; then
 	$(makeProjectDirectory $projectname)
 fi
@@ -180,5 +196,5 @@ fi
 
 if [[ $DEBUG == 1 ]] ; then
 	echo "$(debug)"
-  echo $B
+  	
 fi
