@@ -4,10 +4,6 @@
 
 #set -e
 
-# Import target parameter function
-# Contains the following variables
-# MBED_LINKER_SCRIPT
-source armwiz.config
 
 ##### Constants
 
@@ -19,11 +15,17 @@ BASE_DIR=$ARMWIZ_DIR
 MBED_DIR=$BASE_DIR/mbed/libraries/mbed
 FREERTOS_DIR=$BASE_DIR/freertos/FreeRTOS
 
+
+# Import target parameter function
+# Contains the following variables
+# MBED_LINKER_SCRIPT
+source $ARMWIZ_DIR/armwiz.config
+
 # TODO Make this happen in a config file
 # MBED_LINKER_SCRIPT=""
 
 
-DEBUG=1
+DEBUG=0
 
 ##### Functions
 
@@ -181,16 +183,24 @@ while : ; do
 done
 
 if [[ $targetname ]] ; then
+	printf "Setting $targetname parameters... "
 	setTargetParameters $targetname
+	printf "OK\n"
 fi
 if [[ $projectname ]] ; then
+	printf "Creating $projectname directory tree... "
 	$(makeProjectDirectory $projectname)
+	printf "OK\n"
 fi
 if [[ $mbed ]] ; then
+	printf "Copying mbed library... "
 	$(deployMbed $projectname)
+	printf "OK\n"
 fi
 if [[ $freertos ]] ; then
+	printf "Copying FreeRTOS library... "
 	$(deployFreeRTOS $projectname)
+	printf "OK\n"
 fi
 
 
