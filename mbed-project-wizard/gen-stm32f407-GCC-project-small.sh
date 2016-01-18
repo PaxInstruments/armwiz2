@@ -5,11 +5,8 @@ set -e
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SCRIPTNAME="$(basename $0)"
 BASEDIR=$SCRIPTDIR/..
-CMSIS=$BASEDIR/STM32F4-Discovery_FW_V1.0.0
 MBED=$BASEDIR/mbed/libraries/mbed
-MBEDRTOS=$BASEDIR/mbed/libraries/rtos
 FREERTOS=$BASEDIR/freertos/FreeRTOS
-SAFERTOS=~/.wine/drive_c/HighIntegritySystems/SafeRTOS_Atollic_STM32F4xx_Lib_Demo/SafeRTOS_Atollic_STM32F4xx_Lib_Demo
 LINKER_SCRIPT=STM32F407.ld
 
 ##

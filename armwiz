@@ -2,49 +2,83 @@
 
 # armwiz ARM project generator
 
+#set -e
+
 ##### Constants
 
 ARMWIZ_COMMAND="armwiz"
-ARMWIZ_NAME="ArmWiz"
+ARMWIZ_NAME_PROPER="ARMWiz"
 ARMWIZ_VERSION=0.0.1
+ARMWIZ_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BASE_DIR=$ARMWIZ_DIR
+MBED_DIR=$BASEDIR/mbed/libraries/mbed
+FREERTOS_DIR=$BASE_DIR/freertos/FreeRTOS
+
+# TODO Make this happen in a config file
+LINKER_SCRIPT=STM32F407.ld
+
 
 DEBUG=1
 
 ##### Functions
 
-function mbed {
+function mbed () {
 	# TODO implement mbed
     echo "TODO implement mbed"
 }
 
-
-function freertos {
+function freertos () {
 	# TODO implement freertos
     echo "TODO implement freertos"
 }
 
-function targets {
+function targets () {
 	# List all available targets
 	echo "No available targets"
 }
 
-function template {
-    # TODO implement template
-    echo "TODO implement template"
+function template () {
+  # TODO implement template
+  echo "TODO implement template"
 }
 
-function usage {
+function makeProjectDirectory () {
+  # Make project directory tree
+  # Take projectname as argument
+
+  # Check if project directory is emtpy
+  #echo "$1"
+  STATUS=$(mkdir $1)
+  if [[ "$STATUS" ]]; then
+    echo "Project directory is not empty!"
+    exit 1
+  fi
+
+  # Create directory structure
+  mkdir -p $(pwd)/$1/bin
+  touch $(pwd)/$1/bin/.gitkeep # A dummy file to keep directory structure in place
+  mkdir -p $(pwd)/$1/inc
+  echo 'Your application header files (*.h).' > $(pwd)/$1/inc/README
+  mkdir -p $(pwd)/$1/lib
+  echo 'Place third-party source code or libraries here.' > $(pwd)/$1/lib/README
+  mkdir -p $(pwd)/$1/src
+  echo 'Your application source files (*.c, *.cpp, *.s).' > $(pwd)/$1/src/README
+
+  # TODO Implement remainder of function
+}
+
+function usage () {
 	# Print usage information to std
-    echo "USAGE: $ARMWIZ_COMMAND [options]"
-    echo "       $ARMWIZ_COMMAND [[[-p <projectname> ] [-i]] | [-h]]"
-    echo ""
-    echo "For more detailed usage information type"
-    echo "       $ARMWIZ_COMMAND --help"
+  echo "USAGE: $ARMWIZ_COMMAND [options]"
+  echo "       $ARMWIZ_COMMAND [[[-p <projectname> ] [-i]] | [-h]]"
+  echo ""
+  echo "For more detailed usage information type"
+  echo "       $ARMWIZ_COMMAND --help"
 }
 
-function help {
+function help () {
 	# Print help information to std
-	echo "OVERVIEW: $ARMWIZ_NAME ARM project generator"
+	echo "OVERVIEW: $ARMWIZ_NAME_PROPER ARM project generator"
 	echo ""
     echo "USAGE: $ARMWIZ_COMMAND [options]"
     echo "       $ARMWIZ_COMMAND [[[-p <projectname> ] [-i]] | [-h]]"
@@ -58,20 +92,18 @@ function help {
     echo "                          -t <targetname>"
     echo "  -h | --help             Print this menu"
     echo ""
-    echo "EXAMPELS"
+    echo "EXAMPlES"
     echo "  To create a project named myProject that uses the mbed abstraction"
     echo "  libraries and the FreeRTOS real time operating:"
     echo ""
     echo "    $ARMWIZ_COMMAND --freertos --mbed -p myProject"
     echo ""
-    echo "  $ARMWIZ_NAME version $ARMWIZ_VERSION"
+    echo "  $ARMWIZ_NAME_PROPER version $ARMWIZ_VERSION"
 }
 
-function debug {
+function debug () {
 	echo "output project = $projectname"
 	echo "target = $target"
-	echo "$(mbed)"
-	echo "$(freertos)"
 }
 ##### Main
 
@@ -108,6 +140,11 @@ while : ; do
     shift
     [[ "$1" != "" ]] || break
 done
+
+if [[ $projectname ]] ; then
+  $(makeProjectDirectory $projectname)
+fi
+
 
 if [[ $DEBUG == 1 ]] ; then
 	echo "$(debug)"
