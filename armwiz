@@ -4,6 +4,8 @@
 
 #set -e
 
+#source armwiz.config
+
 ##### Constants
 
 ARMWIZ_COMMAND="armwiz"
@@ -11,7 +13,7 @@ ARMWIZ_NAME_PROPER="ARMWiz"
 ARMWIZ_VERSION=0.0.1
 ARMWIZ_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BASE_DIR=$ARMWIZ_DIR
-MBED_DIR=$BASEDIR/mbed/libraries/mbed
+MBED_DIR=$BASE_DIR/mbed/libraries/mbed
 FREERTOS_DIR=$BASE_DIR/freertos/FreeRTOS
 
 # TODO Make this happen in a config file
@@ -65,6 +67,30 @@ function makeProjectDirectory () {
   echo 'Your application source files (*.c, *.cpp, *.s).' > $(pwd)/$1/src/README
 
   # TODO Implement remainder of function
+}
+
+function deployMbed () {
+  # Copy mbed library into the project
+  # Takes projectname as an argument
+  
+  cp -RL $MBED_DIR $(pwd)/$1/lib/mbed
+  cp `find $MBED_DIR/. | grep "$LINKER_SCRIPT"` $1/$LINKER_SCRIPT
+}
+
+function usage () {
+	# Print usage information to std
+  echo "USAGE: $ARMWIZ_COMMAND [options]"
+  echo "       $ARMWIZ_COMMAND [[[-p <projectname> ] [-i]] | [-h]]"
+  echo ""
+  echo "For more detailed usage information type"
+  echo "       $ARMWIZ_COMMAND --help"
+}
+
+function deployFreeRTOS () {
+  # Copy FreeRTOS library into the project
+  # Takes projectname as an argument
+  
+  cp -RL $FREERTOS_DIR $(pwd)/$1/lib/freertos
 }
 
 function usage () {
@@ -142,10 +168,17 @@ while : ; do
 done
 
 if [[ $projectname ]] ; then
-  $(makeProjectDirectory $projectname)
+	$(makeProjectDirectory $projectname)
+fi
+if [[ $mbed ]] ; then
+	$(deployMbed $projectname)
+fi
+if [[ $freertos ]] ; then
+	$(deployFreeRTOS $projectname)
 fi
 
 
 if [[ $DEBUG == 1 ]] ; then
 	echo "$(debug)"
+  echo $B
 fi
