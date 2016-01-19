@@ -78,17 +78,21 @@ function deployMbed () {
   	# Copy mbed library into the project
   	# Takes projectname as an argument
   
-  	cp -RL $MBED_DIR $(pwd)/$1/lib/mbed
-  	if [[ "$MBED_LINKER_SCRIPT" ]] ; then
-		cp `find $MBED_DIR | grep "$MBED_LINKER_SCRIPT" | head -1` $(pwd)/$1/$MBED_LINKER_SCRIPT
-	fi
+  	#cp -RL $MBED_DIR $(pwd)/$1/lib/mbed
+    #rsync -a --exclude '$MBED_TARGET_NAME/' $MBED_DIR $(pwd)/$1/lib
+    rsync -a $MBED_DIR $(pwd)/$1/lib
+    if [[ "$MBED_LINKER_SCRIPT" ]] ; then
+		    cp `find $MBED_DIR | grep "$MBED_LINKER_SCRIPT" | head -1` $(pwd)/$1/$MBED_LINKER_SCRIPT
+	  fi
+  #  find `find lib/mbed/targets -type d -name 'TARGET_DISCO_F407VG'`/.. -mindepth 1 -maxdepth 1 -type d -name 'TARGET_DISCO_F407VG'
 }
 
 function deployFreeRTOS () {
   # Copy FreeRTOS library into the project
   # Takes projectname as an argument
   
-  cp -RL $FREERTOS_DIR $(pwd)/$1/lib/freertos
+  #cp -RL $FREERTOS_DIR $(pwd)/$1/lib/freertos
+  rsync -a $FREERTOS_DIR $(pwd)/$1/lib
 }
 
 function usage () {
