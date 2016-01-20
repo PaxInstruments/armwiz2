@@ -134,18 +134,19 @@ else
 fi
 # Prune targets not(STM32F4XX or GCC)
 find $(pwd)/lib/mbed/targets/cmsis -mindepth 1 -maxdepth 1 -type d -not -name 'TARGET_STM' -exec rm -rf {} \;
-find $(pwd)/lib/mbed/targets/cmsis/TARGET_STM -mindepth 1 -maxdepth 1 -type d -not -name 'TARGET_STM32F407VG' -exec rm -rf {} \;
-find $(pwd)/lib/mbed/targets/cmsis/TARGET_STM/TARGET_STM32F407VG -mindepth 1 -maxdepth 1 -type d -not -name 'TOOLCHAIN_GCC_ARM' -exec rm -rf {} \;
+find $(pwd)/lib/mbed/targets/cmsis/TARGET_STM -mindepth 1 -maxdepth 1 -type d -not -name 'TARGET_STM32F4' -exec rm -rf {} \;
+find $(pwd)/lib/mbed/targets/cmsis/TARGET_STM/TARGET_STM32F4 -mindepth 1 -maxdepth 1 -type d -not -name 'TARGET_STM32F407VG' -exec rm -rf {} \;
+find $(pwd)/lib/mbed/targets/cmsis/TARGET_STM/TARGET_STM32F4/TARGET_STM32F407VG -mindepth 1 -maxdepth 1 -type d -not -name 'TOOLCHAIN_GCC_ARM' -exec rm -rf {} \;
 find $(pwd)/lib/mbed/targets/hal -mindepth 1 -maxdepth 1 -type d -not -name 'TARGET_STM' -exec rm -rf {} \;
-find $(pwd)/lib/mbed/targets/hal/TARGET_STM -mindepth 1 -maxdepth 1 -type d -not -name 'TARGET_STM32F407VG' -exec rm -rf {} \;
-find $(pwd)/lib/mbed/targets/hal/TARGET_STM/TARGET_STM32F407VG -mindepth 1 -maxdepth 1 -type d -not -name 'TARGET_DISCO_F407VG' -exec rm -rf {} \;
+find $(pwd)/lib/mbed/targets/hal/TARGET_STM -mindepth 1 -maxdepth 1 -type d -not -name 'TARGET_STM32F4' -exec rm -rf {} \;
+find $(pwd)/lib/mbed/targets/hal/TARGET_STM/TARGET_STM32F4 -mindepth 1 -maxdepth 1 -type d -not -name 'TARGET_DISCO_F407VG' -exec rm -rf {} \;
 if [[ "$1" == "link" ]]; then
 	# Linker script
-	ln -s lib/mbed/targets/cmsis/TARGET_STM/TARGET_STM32F407VG/TOOLCHAIN_GCC_ARM/STM32F407.ld stm32f407.ld
+	ln -s lib/mbed/targets/cmsis/TARGET_STM/TARGET_STM32F4/TARGET_STM32F407VG/TOOLCHAIN_GCC_ARM/STM32F407XG.ld stm32f407.ld
 	# Abs to Rel Symlinks
 	symlinks -rc $(pwd) 1>/dev/null
 else
-	cp lib/mbed/targets/cmsis/TARGET_STM/TARGET_STM32F407VG/TOOLCHAIN_GCC_ARM/STM32F407.ld stm32f407.ld
+	cp lib/mbed/targets/cmsis/TARGET_STM/TARGET_STM32F4/TARGET_STM32F407VG/TOOLCHAIN_GCC_ARM/STM32F407XG.ld stm32f407.ld
 fi
 }
 
@@ -451,7 +452,7 @@ case "$1" in
 	echo "Git info:" >> $(pwd)/README
 	echo "   stm32:    "$(cd $BASEDIR && git rev-parse --short=10 HEAD)" ("$(cd $BASEDIR && git symbolic-ref -q --short HEAD || git describe --tags --exact-match 2>/dev/null)")" >> $(pwd)/README
 	echo "   mbed:     "$(cd $BASEDIR/mbed && git rev-parse --short=10 HEAD)" ("$(cd $BASEDIR/mbed && git symbolic-ref -q --short HEAD || git describe --tags --exact-match 2>/dev/null)")" >> $(pwd)/README
-	echo "   freertos: "$(cd $BASEDIR/cpputest && git rev-parse --short=10 HEAD)" ("$(cd $BASEDIR/cpputest && git symbolic-ref -q --short HEAD || git describe --tags --exact-match 2>/dev/null)")" >> $(pwd)/README
+	#echo "   freertos: "$(cd $BASEDIR/cpputest && git rev-parse --short=10 HEAD)" ("$(cd $BASEDIR/cpputest && git symbolic-ref -q --short HEAD || git describe --tags --exact-match 2>/dev/null)")" >> $(pwd)/README
 	do_create_dir $2
 	do_deploy_mbed $2
 	do_deploy_freertos

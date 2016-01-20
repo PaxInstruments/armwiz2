@@ -30,125 +30,162 @@ DEBUG=0
 ##### Functions
 
 function mbed () {
-	# TODO implement mbed
+    # TODO implement mbed
     echo "TODO implement mbed"
 }
 
 function freertos () {
-	# TODO implement freertos
+    # TODO implement freertos
     echo "TODO implement freertos"
 }
 
 function targets () {
-	# List all available targets
-	echo "No available targets"
+    # List all available targets
+    echo "No available targets"
 }
 
 function template () {
-  # TODO implement template
-  echo "TODO implement template"
+    # TODO implement template
+    echo "TODO implement template"
 }
 
 function makeProjectDirectory () {
-  # Make project directory tree
-  # Take projectname as argument
+    # Make project directory tree
+    # Take projectname as argument
 
-  # Check if project directory is emtpy
-  #echo "$1"
-  STATUS=$(mkdir $1)
-  if [[ "$STATUS" ]]; then
-    echo "Project directory is not empty!"
-    exit 1
-  fi
+    # Check if project directory is emtpy
+    #echo "$1"
+    STATUS=$(mkdir $1)
+    if [[ "$STATUS" ]]; then
+        echo "Project directory is not empty!"
+        exit 1
+    fi
 
-  # Create directory structure
-  mkdir -p $(pwd)/$1/bin
-  touch $(pwd)/$1/bin/.gitkeep # A dummy file to keep directory structure in place
-  mkdir -p $(pwd)/$1/inc
-  echo 'Your application header files (*.h).' > $(pwd)/$1/inc/README
-  mkdir -p $(pwd)/$1/lib
-  echo 'Place third-party source code or libraries here.' > $(pwd)/$1/lib/README
-  mkdir -p $(pwd)/$1/src
-  echo 'Your application source files (*.c, *.cpp, *.s).' > $(pwd)/$1/src/README
+    # Create directory structure
+    mkdir -p $(pwd)/$1/bin
+    touch $(pwd)/$1/bin/.gitkeep # A dummy file to keep directory structure in place
+    mkdir -p $(pwd)/$1/inc
+    echo 'Your application header files (*.h).' > $(pwd)/$1/inc/README
+    mkdir -p $(pwd)/$1/lib
+    echo 'Place third-party source code or libraries here.' > $(pwd)/$1/lib/README
+    mkdir -p $(pwd)/$1/src
+    echo 'Your application source files (*.c, *.cpp, *.s).' > $(pwd)/$1/src/README
 
   # TODO Implement remainder of function
 }
 
+
 function deployMbed () {
-  	# Copy mbed library into the project
+
+    MBED_TARGET_PREFIX="TARGET_"
+    MBED_TOOLCHAIN_PREFIX="TOOLCHAIN_"
+  	# Copy into the project mbed library with only the sources files for the target board.
   	# Takes projectname as an argument
-  
-  	#cp -RL $MBED_DIR $(pwd)/$1/lib/mbed
-    #rsync -a --exclude '$MBED_TARGET_NAME/' $MBED_DIR $(pwd)/$1/lib
-    rsync -a $MBED_DIR $(pwd)/$1/lib
-    if [[ "$MBED_LINKER_SCRIPT" ]] ; then
-		    cp `find $MBED_DIR | grep "$MBED_LINKER_SCRIPT" | head -1` $(pwd)/$1/$MBED_LINKER_SCRIPT
-	  fi
-  #  find `find lib/mbed/targets -type d -name 'TARGET_DISCO_F407VG'`/.. -mindepth 1 -maxdepth 1 -type d -name 'TARGET_DISCO_F407VG'
+
+  	# Copy the mbed library excluding code unrelated to target board
+    rsync -ar \
+        --include="$MBED_TARGET_MANUFACTURER" \
+        --include="$MBED_TARGET_FAMILY" \
+        --include="$MBED_TARGET_CMSIS" \
+        --include="$MBED_TARGET_HAL" \
+        --include="$MBED_TOOLCHAIN" \
+        --exclude="$MBED_TARGET_PREFIX*" \
+        --exclude="$MBED_TOOLCHAIN_PREFIX*" \
+        $MBED_DIR \
+        $(pwd)/$1/lib
+    # rsync -a \
+    #     --exclude="*" \
+    #     --include="*STM*" \
+    #     $MBED_DIR \
+    #     $(pwd)/$1/lib
+    
+    # Copy the library except for any code specific to any target.
+    #rsync -a $MBED_DIR \
+    #    --exclude="$MBED_TARGET_PREFIX" \
+    #    $(pwd)/$1/lib
+
+    # Copy the code specific to the target board.
+    #local target_origin="`find $MBED_DIR -type d -name "$MBED_TARGET_NAME_CMSIS" | head -1`"
+    #cp -r $target_origin $(pwd)/$1/lib/mbed/
+
+    # Copy the target board linker script
+    if [[ "$MBED_TARGET_LINKER_SCRIPT" ]] ; then
+		    cp `find $MBED_DIR | grep "$MBED_TARGET_LINKER_SCRIPT" | head -1` $(pwd)/$1/$MBED_LINKER_SCRIPT
+ 	fi
+
+    #  find `find lib/mbed/targets -type d -name 'TARGET_DISCO_F407VG'`/.. -mindepth 1 -maxdepth 1 -type d -name 'TARGET_DISCO_F407VG'
 }
 
 function deployFreeRTOS () {
-  # Copy FreeRTOS library into the project
-  # Takes projectname as an argument
+    # Copy FreeRTOS library into the project
+    # Takes projectname as an argument
   
-  #cp -RL $FREERTOS_DIR $(pwd)/$1/lib/freertos
-  rsync -a $FREERTOS_DIR $(pwd)/$1/lib
+    #cp -RL $FREERTOS_DIR $(pwd)/$1/lib/freertos
+    ## TODO Add --exclude to rsync to exclude copying unnecessary directories
+    rsync -a $FREERTOS_DIR $(pwd)/$1/lib
 }
 
 function usage () {
-	# Print usage information to std
-  echo "USAGE: $ARMWIZ_COMMAND [options]"
-  echo "       $ARMWIZ_COMMAND [[[-p <projectname> ] [-i]] | [-h]]"
-  echo ""
-  echo "For more detailed usage information type"
-  echo "       $ARMWIZ_COMMAND --help"
-}
-
-function setTargetParameters () {
-	# Sets the target parameters acording to --target <targetname>
-	# Takes targetname as input
-	#MBED_LINKER_SCRIPT="$1"
-	setTargetParametersFromList $1
-}
-
-function usage () {
-	# Print usage information to std
-  echo "USAGE: $ARMWIZ_COMMAND [options]"
-  echo "       $ARMWIZ_COMMAND [[[-p <projectname> ] [-i]] | [-h]]"
-  echo ""
-  echo "For more detailed usage information type"
-  echo "       $ARMWIZ_COMMAND --help"
-}
-
-function help () {
-	# Print help information to std
-	echo "OVERVIEW: $ARMWIZ_NAME_PROPER ARM project generator"
-	echo ""
+  	# Print usage information to std
     echo "USAGE: $ARMWIZ_COMMAND [options]"
     echo "       $ARMWIZ_COMMAND [[[-p <projectname> ] [-i]] | [-h]]"
     echo ""
-    echo "OPTIONS:"
-    echo "  -p | --projectname      Use configuration <projectname>"
-    echo "       --mbed             Include mbed libraries"
-    echo "       --freertos         Include FreeRTOS libraries"
-    echo "  -t | --target           Use configuration <targetname>"
-    echo "       --targets          List all available targets"
-    echo "                          -t <targetname>"
-    echo "  -h | --help             Print this menu"
+    echo "For more detailed usage information type"
+    echo "       $ARMWIZ_COMMAND --help"
+}
+
+function setTargetParameters () {
+  	# Sets the target parameters acording to --target <targetname>
+  	# Takes targetname as input
+  	#MBED_LINKER_SCRIPT="$1"
+  	setTargetParametersFromList $1
+}
+
+function usage () {
+  	# Print usage information to std
+    echo "Usage: $ARMWIZ_COMMAND [options] -p <projectname>"
     echo ""
-    echo "EXAMPlES"
-    echo "  To create a project named myProject that uses the mbed abstraction"
-    echo "  libraries and the FreeRTOS real time operating:"
+    echo "For more detailed usage information type"
+    echo "       $ARMWIZ_COMMAND --help"
+}
+
+function help () {
+  	# Print help information to std
+  	echo "Overview: $ARMWIZ_NAME_PROPER ARM project generator"
+  	echo ""
+    echo "Usage: $ARMWIZ_COMMAND [options] -p <projectname>"
     echo ""
-    echo "    $ARMWIZ_COMMAND --freertos --mbed -p myProject"
+    echo "Options:"
+    echo "  -p, --projectname Specify project name via -p <projectname>"
+    echo "  -t, --target      Specify target microcontroller via -t <targetname>"
+    echo "      --freertos    Include FreeRTOS libraries"
+    echo "      --mbed        Include mbed libraries"
+    echo "      --targets     List supported targets"
+    echo "      --version     Print the version number"
+    echo "  -h, --help        Print this message"
     echo ""
-    echo "  $ARMWIZ_NAME_PROPER version $ARMWIZ_VERSION"
+    echo "Examples:"
+    echo "  Create an empty project."
+    echo ""
+    echo "  $ $ARMWIZ_COMMAND -p myProject"
+    echo ""
+    echo "  Create a basic project for the stm32f407vg microcontroller that toggles the"
+    echo "  state of a single pin."
+    echo ""
+    echo "  $ $ARMWIZ_COMMAND -t stm32f407vg -p myProject"
+    echo ""
+    echo "  Create a project named myProject that uses the mbed abstraction libraries and"
+    echo "  the FreeRTOS real time operating system:"
+    echo ""
+    echo "  $ $ARMWIZ_COMMAND --freertos --mbed -t stm32f407vg -p myProject"
+    echo ""
+    echo "$ARMWIZ_COMMAND version $ARMWIZ_VERSION"
 }
 
 function debug () {
-	printf "output project = $projectname"
-	printf "target = $targetname"
-	printf "MBED_LINKER_SCRIPT = $MBED_LINKER_SCRIPT" 
+  	printf "output project = $projectname"
+  	printf "target = $targetname"
+  	printf "MBED_LINKER_SCRIPT = $MBED_LINKER_SCRIPT" 
 }
 ##### Main
 
@@ -178,6 +215,10 @@ while : ; do
 			help
             exit
             ;;
+        --version )
+			echo "$ARMWIZ_COMMAND version $ARMWIZ_VERSION"
+            exit
+            ;;
         * )
 			usage
             exit 1
@@ -187,26 +228,30 @@ while : ; do
 done
 
 if [[ $targetname ]] ; then
-	printf "Setting $targetname parameters... "
+	printf "Setting parameters for $targetname... "
 	setTargetParameters $targetname
 	# TODO implement error checking here. Throw error if the target is not valid
 		printf "OK\n"
 fi
 if [[ $projectname ]] ; then
-	printf "Creating $projectname directory tree... "
+	printf "Creating directory tree for $projectname... "
 	$(makeProjectDirectory $projectname)
 	printf "OK\n"
 fi
 if [[ $mbed ]] ; then
-	printf "Copying mbed library... "
+	printf "Copying library mbed... "
 	$(deployMbed $projectname)
 	printf "OK\n"
 fi
 if [[ $freertos ]] ; then
-	printf "Copying FreeRTOS library... "
+	printf "Copying library FreeRTOS... "
 	$(deployFreeRTOS $projectname)
 	printf "OK\n"
 fi
+
+# TODO This stuff goes in a function. Here for testing.
+cp $BASE_DIR/template/main.cpp $(pwd)/$projectname/src/main.cpp
+cp $BASE_DIR/template/Makefile $(pwd)/$projectname/Makefile
 
 
 if [[ $DEBUG == 1 ]] ; then

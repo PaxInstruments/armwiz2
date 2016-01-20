@@ -18,18 +18,6 @@ if [[ "$STATUS" ]]; then
 fi
 
 ##
-# Print usage
-do_print_usage() {
-	echo "Usage: $SCRIPTNAME <project template> [link]"
-	echo ""
-	echo "   Project Templates:"
-	echo ""
-	echo "   mbed-none ................. creates a bare-metal project with mbed SDK"
-	echo "   mbed-freertos ............. creates a FreeRTOS project with mbed SDK"
-	echo ""
-}
-
-##
 # Create directory structure
 do_create_dir() {
 mkdir -p $(pwd)/bin
@@ -98,11 +86,7 @@ case "$1" in
 	# Print usage instructions
 	cat README
 	;;
-  --help)
-	do_print_usage
-	;;
   *)
-	do_print_usage
 	exit 3
 	;;
 esac
