@@ -2,6 +2,11 @@
 
 # armwiz ARM project generator
 
+# TODO Add a function to pull in the desired submodules.
+# TODO Check if required submodule is present.
+# TODO Generate Makefile from template
+# TODO Generate examples. Modify based on appropriate LEDs etc.
+
 set -e
 DEBUG=0
 
@@ -28,9 +33,24 @@ function targets () {
 }
 
 function template () {
+	# Make template files
     # TODO implement template function to copy main.c and other files
     # into the project directory.
-    echo "TODO implement template"
+    # TODO Add a project file for each type of tempalte needed. No need to have only a
+    # single main.cpp file. We can make one for FreeRTOS-mbed, one for ChibiOS, or whatever
+
+    if [[ mbed ]] ; then
+    	sleep 0
+    fi
+    if [[ freertos ]] ; then
+    	sleep 0
+    fi
+    if [[ chibios ]] ; then
+    	sleep 0
+    fi
+
+	cp $BASE_DIR/template/main.cpp $(pwd)/$1/src/main.cpp
+	cp $BASE_DIR/template/Makefile $(pwd)/$1/Makefile
 }
 
 function makeProjectDirectory () {
@@ -55,7 +75,6 @@ function makeProjectDirectory () {
     mkdir -p $(pwd)/$1/src
     echo 'Your application source files (*.c, *.cpp, *.s).' > $(pwd)/$1/src/README.txt
 }
-
 
 function deployMbed () {
 	# Copy into the project the mbed libraries with supporting hardware files
@@ -137,6 +156,7 @@ function help () {
     echo "Options:"
     echo "  -p, --projectname Specify project name via -p <projectname>"
     echo "  -t, --target      Specify target microcontroller via -t <targetname>"
+    echo "      --chibios     Include ChibiOS libraries"
     echo "      --freertos    Include FreeRTOS libraries"
     echo "      --mbed        Include mbed libraries"
     echo "      --targets     List supported targets"
@@ -212,7 +232,7 @@ done
 
 if [[ $targetname ]] ; then
     printf "Setting parameters for $targetname... "
-	  # TODO implement error checking here. Throw error if the target is not valid
+	# TODO implement error checking here. Throw error if the target is not valid
     setTargetParameters $targetname
     if [[ $MBED_TARGET_MANUFACTURER ]] ; then
         printf "OK\n"
@@ -234,6 +254,11 @@ if [[ $projectname ]] ; then
 	$(makeProjectDirectory $projectname)
 	printf "OK\n"
 fi
+if [[ $projectname ]] ; then
+	printf "Creating template files for $projectname... "
+	$(template $projectname)
+	printf "OK\n"
+fi
 if [[ $mbed ]] ; then
 	printf "Copying library mbed... "
 	$(deployMbed $projectname)
@@ -249,10 +274,6 @@ if [[ $chibios ]] ; then
 	$(deployChibiOS $projectname)
 	printf "OK\n"
 fi
-
-# TODO This stuff goes in a function. Here for testing.
-cp $BASE_DIR/template/main.cpp $(pwd)/$projectname/src/main.cpp
-cp $BASE_DIR/template/Makefile $(pwd)/$projectname/Makefile
 
 
 if [[ $DEBUG == 1 ]] ; then
