@@ -2,5 +2,5 @@
 	path = mbed
 	url = https://github.com/mbedmicro/mbed.git
 [submodule "freertos"]
-	path = freertos
+	path = libraries/freertos/
 	url = https://github.com/PaxInstruments/freertos.git
