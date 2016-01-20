@@ -18,7 +18,7 @@ ARMWIZ_VERSION=0.0.1
 ARMWIZ_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BASE_DIR=$ARMWIZ_DIR
 MBED_DIR=$BASE_DIR/libraries/mbed/libraries/mbed
-FREERTOS_DIR=$BASE_DIR/libraries/freertos/FreeRTOS/Source
+FREERTOS_DIR=$BASE_DIR/libraries/freertos/FreeRTOS
 CHIBIOS_DIR=$BASE_DIR/libraries/ChibiOS/os
 
 # Import target parameter function
@@ -109,7 +109,13 @@ function deployFreeRTOS () {
   
     ## TODO Add --exclude to rsync to exclude copying unnecessary directories
     rsync -ar \
-    $FREERTOS_DIR/ $(pwd)/$1/lib/freertos
+    	--exclude="Demo" \
+    	--exclude="links_to_doc_pages_for_the_demo_projects.url" \
+    $FREERTOS_DIR/ $(pwd)/$1/lib/FreeRTOS
+
+    mkdir -p $(pwd)/$1/lib/FreeRTOS/config
+    echo 'Your application header files (*.h).' > $(pwd)/$1/inc/README.txt
+
 }
 
 function deployChibiOS () {
