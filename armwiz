@@ -21,27 +21,13 @@ FREERTOS_DIR=$BASE_DIR/freertos/FreeRTOS
 # MBED_LINKER_SCRIPT
 source $ARMWIZ_DIR/armwiz.config
 
-# TODO Make this happen in a config file
-# MBED_LINKER_SCRIPT=""
-
-
 DEBUG=0
 
 ##### Functions
 
-function mbed () {
-    # TODO implement mbed
-    echo "TODO implement mbed"
-}
-
-function freertos () {
-    # TODO implement freertos
-    echo "TODO implement freertos"
-}
-
 function targets () {
     # List all available targets
-    echo "No available targets"
+    grep " )" armwiz.config | tr -d " )" | tr -d "*"
 }
 
 function template () {
