@@ -74,7 +74,7 @@ function echoMakefile () {
 	echo "CXXFLAGS=-c \$(MCFLAGS) \$(DEFS) \$(INCLUDES) -std=c++11"
 	echo "CXXFLAGS+=-U__STRICT_ANSI__ # Undefine __STRICT_ANSI__ to compile Stream.cpp using c++11. This is a dirty hack!"
 	echo "# LINKER FLAGS"
-	echo "LDSCRIPT=STM32F407XG.ld"
+	echo "LDSCRIPT=$MBED_TARGET_LINKER_SCRIPT"
 	echo "LDFLAGS =-T \$(LDSCRIPT) \$(MCFLAGS) --specs=nosys.specs \$(INCLUDES_LIBS) \$(LINK_LIBS)"
 	echo ""
 	echo "###"
