@@ -6,6 +6,8 @@
 # TODO Check if required submodule is present.
 # TODO Generate Makefile from template
 # TODO Generate examples. Modify based on configuration for appropriate LEDs etc.
+# TODO Use rsync for copying FreeRTOS
+# TODO Generate FreeRTOSConfig.h
 
 set -e
 DEBUG=0
