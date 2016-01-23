@@ -5,7 +5,7 @@
 # TODO Add a function to pull in the desired submodules.
 # TODO Check if required submodule is present.
 # TODO Generate Makefile from template
-# TODO Generate examples. Modify based on appropriate LEDs etc.
+# TODO Generate examples. Modify based on configuration for appropriate LEDs etc.
 
 set -e
 DEBUG=0
@@ -26,6 +26,7 @@ source $ARMWIZ_DIR/armwiz.config
 
 # Import Makefile generation
 source $ARMWIZ_DIR/armwiz.make
+source $ARMWIZ_DIR/armwiz.example
 
 ##### Functions
 
@@ -41,12 +42,18 @@ function deployMakefile () {
 	echoMakefile > $(pwd)/$1/Makefile
 }
 
+function deployExample () {
+	# Generate the Makefile
+	# Takes <projectname> as argument
+	echoExample > $(pwd)/$1/src/${projectname}.cpp
+}
+
 function template () {
 	# Make template files
-    # TODO implement template function to copy main.c and other files
+    # TODO implement template function to copy <projectname>.c and other files
     # into the project directory.
     # TODO Add a project file for each type of tempalte needed. No need to have only a
-    # single main.cpp file. We can make one for FreeRTOS-mbed, one for ChibiOS, or whatever
+    # single <projectname>.cpp file. We can make one for FreeRTOS-mbed, one for ChibiOS, or whatever
 
     if [[ mbed ]] ; then
     	sleep 0
@@ -57,13 +64,6 @@ function template () {
     if [[ chibios ]] ; then
     	sleep 0
     fi
-
-	cp $BASE_DIR/template/main.cpp $(pwd)/$1/src/main.cpp
-
-	#cp $BASE_DIR/template/Makefile $(pwd)/$1/Makefile
-	# TODO search and replace in Makefile
-	# "LDSCRIPT==" >> "LDSCRIPT=$MBED_TARGET_LINKER_SCRIPT="
-	# "MCFLAGS==" >> "GCC_MCFLAGS=$MBED_TARGET_LINKER_SCRIPT="
 }
 
 function makeProjectDirectory () {
@@ -295,7 +295,13 @@ if [[ $chibios ]] ; then
 	$(deployChibiOS $projectname)
 	printf "OK\n"
 fi
+printf "Creating Makefile... "
 deployMakefile $projectname
+printf "OK\n"
+
+printf "Creating ${projectname}.cpp... "
+deployExample $projectname
+printf "OK\n"
 
 if [[ $DEBUG == 1 ]] ; then
 	echo "$(debug)"
