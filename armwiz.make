@@ -19,7 +19,7 @@ function echoMakefile () {
 	echo "## User Definable Items ###"
 	echo "###########################"
 	echo ""
-	echo "OPENOCD_BOARD_CONFIG_FILE=board/stm32f4discovery.cfg"
+	echo "BOARD_CONFIG_FILE=$OPENOCD_BOARD_CONFIG_FILE"
 	echo ""
 	echo "# Define output files ELF & IHEX"
 	echo "BINELF=${projectname}.elf"
@@ -151,6 +151,6 @@ function echoMakefile () {
 	echo "### Programming and debugging ###"
 	echo "#################################"
 	echo "deploy:"
-	echo "	\${OPENOCD_PATH}\${OPENOCD} -f \${OPENOCD_BOARD_CONFIG_FILE} -c \"program \${BINDIR}/\"\${BINELF}\" verify reset\""
+	echo "	\${OPENOCD_PATH}\${OPENOCD} -f \${BOARD_CONFIG_FILE} -c \"program \${BINDIR}/\"\${BINELF}\" verify reset\""
 	echo ""
 }
