@@ -8,6 +8,11 @@
 # TODO Generate examples. Modify based on configuration for appropriate LEDs etc.
 # TODO Use rsync for copying FreeRTOS
 # TODO Generate FreeRTOSConfig.h
+# TODO Made an example file specfically for each board and configuration. The
+#      examples must be tailored rather than generated. Generating them on the
+#      fly would be unweildy.
+# TODO Make FreeRTOS checkout th emost recent version from the tags
+# TODO Make FreeRTOS and ChibiOS mutually exclusive
 
 set -e
 DEBUG=0
@@ -21,7 +26,7 @@ ARMWIZ_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BASE_DIR=$ARMWIZ_DIR
 MBED_DIR=$BASE_DIR/libraries/mbed/libraries/mbed
 FREERTOS_DIR=$BASE_DIR/libraries/freertos/FreeRTOS
-CHIBIOS_DIR=$BASE_DIR/libraries/ChibiOS/os
+CHIBIOS_DIR=$BASE_DIR/libraries/ChibiOS
 
 # Import target parameter function
 source $ARMWIZ_DIR/armwiz.config
@@ -124,13 +129,20 @@ function deployFreeRTOS () {
   
     ## TODO Add --exclude to rsync to exclude copying unnecessary directories
     rsync -ar \
+        --include="${FREERTOS_PORT}" \
+        --include="${FREERTOS_COMPILER}" \
+        --include="MemMang" \
+        --include="${FREERTOS_HEAP}" \
+        --exclude="MemMang/*" \
+        --exclude="${FREERTOS_COMPILER}/*" \
+        --exclude="portable/*" \
     	--exclude="Demo" \
     	--exclude="links_to_doc_pages_for_the_demo_projects.url" \
     $FREERTOS_DIR/ $(pwd)/$1/lib/FreeRTOS
 
     mkdir -p $(pwd)/$1/lib/FreeRTOS/config
     echo 'Your application header files (*.h).' > $(pwd)/$1/inc/README.txt
-
+    cat templates/FreeRTOSConfig.h > $(pwd)/$1/lib/FreeRTOS/config/FreeRTOSConfig.h
 }
 
 function deployChibiOS () {
@@ -139,6 +151,48 @@ function deployChibiOS () {
   
     ## TODO Add --exclude to rsync to exclude copying unnecessary directories
     rsync -ar \
+    --include="os/common/ports/ARMCMx/compilers/GCC" \
+    --exclude="os/common/ports/ARMCMx/compilers/*" \
+    --include="os/common/ports/ARMCMx/devices/STM32F4xx" \
+    --exclude="os/common/ports/ARMCMx/devices/*" \
+    --include="os/common/ports/ARMCMx" \
+    --exclude="os/common/ports/*" \
+    --include="os/rt/include" \
+    --include="os/rt/ports" \
+    --include="os/rt/src" \
+    --include="os/rt/ports/ARMCMx" \
+    --include="os/rt/ports/ARMCMx/compilers/GCC" \
+    --exclude="os/rt/ports/ARMCMx/compilers/*" \
+    --exclude="os/rt/ports/*" \
+    --include="os/rt/rt.mk" \
+    --include="os/ext" \
+    --exclude="os/rt/*" \
+    --include="test/rt" \
+    --exclude="test/*" \
+    --exclude="demos" \
+    --exclude="os/ext/CMSIS/KINETIS" \
+    --include="os/ext/CMSIS/ST/STM32F4xx" \
+    --exclude="os/ext/CMSIS/ST/*" \
+    --include="os/hal/boards/ST_STM32F4_DISCOVERY" \
+    --exclude="os/hal/boards/*" \
+    --exclude="os/hal/dox" \
+    --exclude="os/hal/lib" \
+    --include="os/hal/osal/rt" \
+    --exclude="os/hal/osal/*" \
+    --include="os/hal/ports/common" \
+    --include="os/hal/ports/STM32" \
+    --include="os/hal/ports/STM32/LLD" \  # TODO Limit the copied directories
+    --include="os/hal/ports/STM32/STM32F4xx" \
+    --exclude="os/hal/ports/STM32/*" \
+    --exclude="os/hal/ports/*" \
+    --exclude="doc" \
+    --exclude="ext" \
+    --exclude="license.txt" \
+    --exclude="doc" \
+    --exclude="documentation.html" \
+    --exclude="release*" \
+    --exclude="readme*" \
+    --exclude="testhal" \
     $CHIBIOS_DIR/ $(pwd)/$1/lib/ChibiOS
 }
 
