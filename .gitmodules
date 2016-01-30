@@ -7,3 +7,6 @@
 [submodule "libraries/ChibiOS"]
 	path = libraries/ChibiOS
 	url = https://github.com/ChibiOS/ChibiOS.git
+[submodule "CMSIS"]
+	path = libraries/CMSIS
+	url = https://github.com/ARM-software/CMSIS
