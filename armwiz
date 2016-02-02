@@ -13,6 +13,7 @@
 #      fly would be unweildy.
 # TODO Make FreeRTOS checkout th emost recent version from the tags
 # TODO Make FreeRTOS and ChibiOS mutually exclusive
+# TODO Initialize a new project as a git repository. Maybe have a command flag for this.
 
 set -e
 DEBUG=0
@@ -173,6 +174,8 @@ function deployChibiOS () {
     --exclude="os/ext/CMSIS/KINETIS" \
     --include="os/ext/CMSIS/ST/STM32F4xx" \
     --exclude="os/ext/CMSIS/ST/*" \
+    --include="os/common/ports/ARMCMx/compilers/GCC/mk/startup_stm32f4xx.mk" \
+    --exclude="os/common/ports/ARMCMx/compilers/GCC/mk/*" \
     --include="os/hal/boards/ST_STM32F4_DISCOVERY" \
     --exclude="os/hal/boards/*" \
     --exclude="os/hal/dox" \
