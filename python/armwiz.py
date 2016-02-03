@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
 
+# Project TODO List
+# TODO Add a function to pull in the desired submodules.
+# TODO Check if required submodule is present.
+# TODO Generate Makefile from template
+# TODO Generate examples. Modify based on configuration for appropriate LEDs etc.
+# TODO Use rsync for copying FreeRTOS
+# TODO Generate FreeRTOSConfig.h
+# TODO Made an example file specfically for each board and configuration. The
+#      examples must be tailored rather than generated. Generating them on the
+#      fly would be unweildy.
+# TODO Make FreeRTOS checkout th emost recent version from the tags
+# TODO Make FreeRTOS and ChibiOS mutually exclusive
+# TODO Initialize a new project as a git repository. Maybe have a command flag for this.
+
+
 # TODO: Add information here.
 """
 Armwiz docstring.
@@ -48,6 +63,9 @@ __maintainer__ = "Charles Pax"
 __email__ = "charles.pax@gmail.com"
 __status__ = "Development"
 
+#######################
+## Class definitions ##
+#######################
 class core(object):
 	"""The MCU core designed by ARM."""
 	def __init__(self,name,architecture):
@@ -83,40 +101,9 @@ class target(object):
 		self.manufacturer=manufacturer
 		self.mcu=mcu
 
-## List of Manufacturers
-manufacturer_unknown = manufacturer('unknown','none')
-manufacturer_ARM = manufacturer('ARM','https://www.arm.com/')
-manufacturer_Atmel = manufacturer('Atmel','http://www.atmel.com/')
-manufacturer_ST = manufacturer('ST Microsystems','http://www.st.com/')
-manufacturer_micropython = manufacturer('micropython.org','http://micropython.org/')
-
-## List of Cores
-core_ARMCorte_M0 = core('ARM Cortex-M0','ARMv6-M')
-core_ARMCorte_M0Plus = core('ARM Cortex-M0','ARMv6-M')
-core_ARMCorte_M1 = core('ARM Cortex-M0','ARMv6-M')
-core_ARMCorte_M3 = core('ARM Cortex-M0','ARMv7-M')
-core_ARMCorte_M4 = core('ARM Cortex-M0','ARMv7E-M')
-
-## List of MCUs
-# TODO Make this such that we only declare the mcu variables when required; not all at once.
-mcu_atsamd21j18a = mcu('SAMD21J12A',manufacturer_Atmel,core_ARMCorte_M0Plus)
-mcu_stm32f103rct6 = mcu('STM32F103RCT6',manufacturer_ST,core_ARMCorte_M3)
-mcu_stm32f103c8t6 = mcu('STM32F103C8T6',manufacturer_ST,core_ARMCorte_M3)
-mcu_stm32f407vgt6 = mcu('STM32F407VGT6',manufacturer_ST,core_ARMCorte_M4)
-mcu_stm32f411ret6 = mcu('STM32F411RET6',manufacturer_ST,core_ARMCorte_M4)
-mcu_stm32f405rgt6 = mcu('STM32F405RGT6',manufacturer_micropython,core_ARMCorte_M4)
-
-## List of boards
-# TODO Make this into a list, so I can iteratively search through
-# TODO Make this such that we only declare the board variables when required; not all at once.
-board_atmel_samd21xplainedpro = board('SAMD21 Xplained Pro',manufacturer_Atmel,mcu_atsamd21j18a,'http://www.atmel.com/tools/ATSAMD21-XPRO.aspx')
-board_china_130811_v100 = board('Generic 130811_v1.00',manufacturer_unknown,mcu_stm32f103rct6,'https://github.com/PaxInstruments/armwiz/wiki/130811_v100')
-board_china_stm32f103rct6_v102 = board('Generic STM32F103RCT6 V1.02',manufacturer_unknown,mcu_stm32f103rct6,'https://github.com/PaxInstruments/armwiz/wiki/stm32f103rct6_v102')
-board_china_stm32f1c8t6_Board_v402 = board('Generic STM32F1x8x6 Board_v4.02',manufacturer_unknown,mcu_stm32f103c8t6,'https://github.com/PaxInstruments/armwiz/wiki/stm32f1c8t6_Board_v402')
-board_stmt3f4discovery = board('STM32F4 Discovery',manufacturer_ST,mcu_stm32f407vgt6,'http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/PF252419')
-board_nucleo_f411re = board('Nucleo-F411RE',manufacturer_ST,mcu_stm32f411ret6,'http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/LN1847/PF260320')
-board_pyboard_v10 = board('PyBoard v1.0',manufacturer_micropython,mcu_stm32f405rgt6,'http://docs.micropython.org/en/latest/pyboard/hardware/index.html')
-
+##########################
+## Function definitions ##
+##########################
 def printWizard():
 	print("                             ____                   ")
 	print("                          .'* *.'                   ")
@@ -210,12 +197,115 @@ def parseArguments():
 		action='version')
 	return parser.parse_args()
 
+def deployMakefile():
+	"""
+	# Generate the Makefile
+	# Takes <projectname> as argument
+	"""
+	# echoMakefile > $(pwd)/$1/Makefile
+
+def deployExample():
+	"""
+	Generate the Makefile
+	Takes <projectname> as argument
+	"""
+	# echoExample > $(pwd)/$1/src/${projectname}.cpp
+
+def deployChibiOS ():
+	"""
+	deployMbed
+	"""
+
+def deployFreeRTOS ():
+	"""
+	deployMbed
+	"""
+
+def deployMbed ():
+	"""
+	deployMbed
+	"""
+
+
+##################
+## Object lists ##
+##################
+
+## List of Manufacturers
+manufacturer_unknown = manufacturer('unknown','none')
+manufacturer_ARM = manufacturer('ARM','https://www.arm.com/')
+manufacturer_Atmel = manufacturer('Atmel','http://www.atmel.com/')
+manufacturer_ST = manufacturer('ST Microsystems','http://www.st.com/')
+manufacturer_micropython = manufacturer('micropython.org','http://micropython.org/')
+
+## List of Cores
+core_ARMCorte_M0 = core('ARM Cortex-M0','ARMv6-M')
+core_ARMCorte_M0Plus = core('ARM Cortex-M0','ARMv6-M')
+core_ARMCorte_M1 = core('ARM Cortex-M0','ARMv6-M')
+core_ARMCorte_M3 = core('ARM Cortex-M0','ARMv7-M')
+core_ARMCorte_M4 = core('ARM Cortex-M0','ARMv7E-M')
+
+## List of MCUs
+# TODO Make this such that we only declare the mcu variables when required; not all at once.
+mcu_atsamd21j18a = mcu('SAMD21J12A',manufacturer_Atmel,core_ARMCorte_M0Plus)
+mcu_stm32f103rct6 = mcu('STM32F103RCT6',manufacturer_ST,core_ARMCorte_M3)
+mcu_stm32f103c8t6 = mcu('STM32F103C8T6',manufacturer_ST,core_ARMCorte_M3)
+mcu_stm32f407vgt6 = mcu('STM32F407VGT6',manufacturer_ST,core_ARMCorte_M4)
+mcu_stm32f411ret6 = mcu('STM32F411RET6',manufacturer_ST,core_ARMCorte_M4)
+mcu_stm32f405rgt6 = mcu('STM32F405RGT6',manufacturer_micropython,core_ARMCorte_M4)
+
+## List of boards
+# TODO Make this into a list, so I can iteratively search through
+# TODO Make this such that we only declare the board variables when required; not all at once.
+board_atmel_samd21xplainedpro = board('SAMD21 Xplained Pro',manufacturer_Atmel,mcu_atsamd21j18a,'http://www.atmel.com/tools/ATSAMD21-XPRO.aspx')
+board_china_130811_v100 = board('Generic 130811_v1.00',manufacturer_unknown,mcu_stm32f103rct6,'https://github.com/PaxInstruments/armwiz/wiki/130811_v100')
+board_china_stm32f103rct6_v102 = board('Generic STM32F103RCT6 V1.02',manufacturer_unknown,mcu_stm32f103rct6,'https://github.com/PaxInstruments/armwiz/wiki/stm32f103rct6_v102')
+board_china_stm32f1c8t6_Board_v402 = board('Generic STM32F1x8x6 Board_v4.02',manufacturer_unknown,mcu_stm32f103c8t6,'https://github.com/PaxInstruments/armwiz/wiki/stm32f1c8t6_Board_v402')
+board_stmt3f4discovery = board('STM32F4 Discovery',manufacturer_ST,mcu_stm32f407vgt6,'http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/PF252419')
+board_nucleo_f411re = board('Nucleo-F411RE',manufacturer_ST,mcu_stm32f411ret6,'http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/LN1847/PF260320')
+board_pyboard_v10 = board('PyBoard v1.0',manufacturer_micropython,mcu_stm32f405rgt6,'http://docs.micropython.org/en/latest/pyboard/hardware/index.html')
+
+
+def makeProjectDirectoryTree(arguments):
+	"""
+	Make project directory tree
+	Takes <projectname> as argument
+	"""
+	makePath(arguments.projectname)
+	if arguments.chibios:
+		print('Copying ChibiOS libraries... ',end="")
+		try:
+			makePath('%s/libraries/ChibiOS' % arguments.projectname)
+			print('Okay')
+		except:
+			print('ERROR copying')
+			exit()
+	if arguments.freertos:
+		print('Copying ChibiOS libraries... ',end="")
+		try:
+			makePath('%s/libraries/FreeRTOS' % arguments.projectname)
+			print('Okay')
+		except:
+			print('ERROR copying')
+			exit()
+	if arguments.mbed:
+		print('Copying ChibiOS libraries... ',end="")
+		try:
+			makePath('%s/libraries/mbed' % arguments.projectname)
+			print('Okay')
+		except:
+			print('ERROR copying')
+			exit()
+
 def main():
 	"""The main program loop"""
 	arguments = parseArguments()
 
 	if arguments.wizard == True:
 		printWizard()
+
+	if arguments.projectname:
+		makeProjectDirectoryTree(arguments)
 
 	print(arguments)
 	print("Project name: %s" % arguments.projectname )
@@ -235,7 +325,10 @@ def main():
 	# targetDetailPrint(board_nucleo_f411re)
 	# targetDetailPrint(board_pyboard_v10)
 
-main()
+if __name__ == "__main__":
+	# TODO Read about python file structure
+	#      https://www.artima.com/weblogs/viewpost.jsp?thread=4829
+	main()
 
 
 

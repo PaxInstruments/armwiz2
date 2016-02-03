@@ -2,19 +2,6 @@
 
 # armwiz ARM project generator
 
-# TODO Add a function to pull in the desired submodules.
-# TODO Check if required submodule is present.
-# TODO Generate Makefile from template
-# TODO Generate examples. Modify based on configuration for appropriate LEDs etc.
-# TODO Use rsync for copying FreeRTOS
-# TODO Generate FreeRTOSConfig.h
-# TODO Made an example file specfically for each board and configuration. The
-#      examples must be tailored rather than generated. Generating them on the
-#      fly would be unweildy.
-# TODO Make FreeRTOS checkout th emost recent version from the tags
-# TODO Make FreeRTOS and ChibiOS mutually exclusive
-# TODO Initialize a new project as a git repository. Maybe have a command flag for this.
-
 set -e
 DEBUG=0
 
