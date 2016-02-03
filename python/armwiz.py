@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
-
 # TODO: Add information here.
 """
 Armwiz docstring.
 """
-
 #                         ____
 #                       .'* *.'
 #                    __/_*_*(_
@@ -180,24 +178,36 @@ def parseArguments():
 		description='Generate a template embedded ARM project.',
 		epilog="armwiz 2016")
 	parser.add_argument('-p','--projectname',
-		metavar="<projectname>",
 		help='Specify project name via -p <projectname>',
+		metavar="<projectname>",
 		required=True)
 	parser.add_argument('-t','--target',
-		metavar="<targetname>",
 		help='Specify target microcontroller via -t <targetname>',
+		metavar="<targetname>",
 		required=True)
 	parser.add_argument('--chibios',
-		action="store_true",
 		help='Include ChibiOS libraries',
+		action="store_true",
+		required=False)
+	parser.add_argument('--freertos',
+		help='Include FreeRTOS libraries',
+		action="store_true",
+		required=False)
+	parser.add_argument('--mbed',
+		help='Include mbed libraries',
+		action="store_true",
+		required=False)
+	parser.add_argument('--targetlist',
+		help='Print a list of available targets',
+		action="store_true",
 		required=False)
 	parser.add_argument('-w','--wizard',
-		action="store_true",
 		help='Print the wizard',
+		action="store_true",
 		required=False)
 	parser.add_argument('-v','--version',
-		action='version',
-		version='%(prog)s {version}'.format(version=__version__))
+		version='%(prog)s {version}'.format(version=__version__),
+		action='version')
 	return parser.parse_args()
 
 def main():
@@ -207,10 +217,9 @@ def main():
 	if arguments.wizard == True:
 		printWizard()
 
-	printHeader()
+	print(arguments)
 	print("Project name: %s" % arguments.projectname )
 	print("Target name: %s" % arguments.target )
-	print("Argument %s" % arguments)
 	directory = "tempDir"
 
 
