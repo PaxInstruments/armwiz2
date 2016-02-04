@@ -206,7 +206,7 @@ def makeProjectDirectoryTree(arguments):
 	Make project directory tree
 	Takes <projectname> as argument
 	"""
-	print('Creating {0}/ directory:\n'.format(arguments.projectname), end="")
+	print('Creating {0}/ directory... '.format(arguments.projectname), end="")
 	sys.stdout.flush()
 	try:
 		makePath(arguments.projectname)
@@ -215,19 +215,15 @@ def makeProjectDirectoryTree(arguments):
 		makePath('%s/libraries' % arguments.projectname)
 		makePath('%s/source' % arguments.projectname)
 		makePath('%s/tools' % arguments.projectname)
-		try:
-			call('git init {0}'.format(arguments.projectname),shell=True)
-		except:
-			exit()
+		makePath('%s/.git' % arguments.projectname)
 		makePath('%s/.git/modules' % arguments.projectname)
 		makePath('%s/.git/modules/libraries' % arguments.projectname)
 		print('Okay')
-	except OSError as exception:
-		if exception.errno == errno.EEXIST:
-			print('ERROR: MakeProjectDirectoryTree(): A directory already exists.', self)
-		else:
-			print('ERROR: UNKNOWN')
-			raise
+	except:
+		exit()
+	try:
+		call('git init {0}'.format(arguments.projectname),shell=True)
+	except:
 		exit()
 
 
@@ -261,7 +257,7 @@ lib_freertos = library('FreeRTOS','freertos','','https://github.com/PaxInstrumen
 lib_mbed = library('mbed','mbed','','https://github.com/mbedmicro/mbed.git')
 
 def deployLibrary(arguments,library):
-	print('Copying {0} libraries...'.format(library.name), end="")
+	print('Copying {0} libraries... '.format(library.name), end="")
 	sys.stdout.flush()
 	try:
 		makePath("{0}/{1}".format(arguments.projectname,library.libTargetDir))
