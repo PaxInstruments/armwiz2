@@ -158,12 +158,32 @@ def parseArguments():
 		help='Include ChibiOS libraries',
 		action="store_true",
 		required=False)
+	parser.add_argument('--cmsis',
+		help='Include CMSIS libraries',
+		action="store_true",
+		required=False)
 	parser.add_argument('--freertos',
 		help='Include FreeRTOS libraries',
 		action="store_true",
 		required=False)
 	parser.add_argument('--mbed',
 		help='Include mbed libraries',
+		action="store_true",
+		required=False)
+	parser.add_argument('--stm32cubef1',
+		help='Include STM32CubeF1 libraries',
+		action="store_true",
+		required=False)
+	parser.add_argument('--stm32cubef2',
+		help='Include STM32CubeF2 libraries',
+		action="store_true",
+		required=False)
+	parser.add_argument('--stm32cubef3',
+		help='Include STM32CubeF3 libraries',
+		action="store_true",
+		required=False)
+	parser.add_argument('--stm32cubef4',
+		help='Include STM32CubeF4 libraries',
 		action="store_true",
 		required=False)
 	parser.add_argument('--targetlist',
@@ -226,8 +246,6 @@ def makeProjectDirectoryTree(arguments):
 	except:
 		exit()
 
-
-
 def deployMakefile(arguments):
 	"""
 	# Generate the Makefile
@@ -252,10 +270,6 @@ class library(object):
 		self.libTargetDir='{0}/{1}{2}'.format('libraries',self.parentDir,self.gitName)
 		self.libSourceDir='{0}/{1}{2}'.format('libraries',self.parentDir,self.gitName)
 
-lib_chibios = library('ChibiOS','ChibiOS','','https://github.com/ChibiOS/ChibiOS.git')
-lib_freertos = library('FreeRTOS','freertos','','https://github.com/PaxInstruments/freertos.git')
-lib_mbed = library('mbed','mbed','','https://github.com/mbedmicro/mbed.git')
-
 def deployLibrary(arguments,library):
 	print('Copying {0} libraries... '.format(library.name), end="")
 	sys.stdout.flush()
@@ -279,6 +293,16 @@ def deployLibrary(arguments,library):
 ##################
 ## Object lists ##
 ##################
+
+## List of Libraries
+lib_chibios = library('ChibiOS','ChibiOS','','https://github.com/ChibiOS/ChibiOS.git')
+lib_freertos = library('FreeRTOS','freertos','','https://github.com/PaxInstruments/freertos.git')
+lib_mbed = library('mbed','mbed','','https://github.com/mbedmicro/mbed.git')
+lib_cmsis = library('CMSIS','CMSIS','','https://github.com/ARM-software/CMSIS')
+lib_stm32cubef1 = library('STM32CubeF1','STM32CubeF1','','https://github.com/PaxInstruments/STM32CubeF1')
+lib_stm32cubef2 = library('STM32CubeF2','STM32CubeF2','','https://github.com/PaxInstruments/STM32CubeF2')
+lib_stm32cubef3 = library('STM32CubeF3','STM32CubeF3','','https://github.com/PaxInstruments/STM32CubeF3')
+lib_stm32cubef4 = library('STM32CubeF4','STM32CubeF4','','https://github.com/PaxInstruments/STM32CubeF4')
 
 ## List of Manufacturers
 manufacturer_unknown = manufacturer('unknown','none')
@@ -325,24 +349,63 @@ def main():
 		try:
 			makeProjectDirectoryTree(arguments)
 		except:
+			print('ERROR')
 			exit()
 
 	if arguments.chibios == True:
 		try:
 			deployLibrary(arguments,lib_chibios)
 		except:
+			print('ERROR')
 			exit()
 
 	if arguments.freertos == True:
 		try:
 			deployLibrary(arguments,lib_freertos)
 		except:
+			print('ERROR')
 			exit()
 
 	if arguments.mbed == True:
 		try:
 			deployLibrary(arguments,lib_mbed)
 		except:
+			print('ERROR')
+			exit()
+
+	if arguments.cmsis == True:
+		try:
+			deployLibrary(arguments,lib_cmsis)
+		except:
+			print('ERROR')
+			exit()
+
+	if arguments.stm32cubef1 == True:
+		try:
+			deployLibrary(arguments,lib_stm32cubef1)
+		except:
+			print('ERROR in stm32cubef1')
+			exit()
+
+	if arguments.stm32cubef2 == True:
+		try:
+			deployLibrary(arguments,lib_stm32cubef2)
+		except:
+			print('ERROR in stm32cubef2')
+			exit()
+
+	if arguments.stm32cubef3 == True:
+		try:
+			deployLibrary(arguments,lib_stm32cubef3)
+		except:
+			print('ERROR in stm32cubef3')
+			exit()
+
+	if arguments.stm32cubef4 == True:
+		try:
+			deployLibrary(arguments,lib_stm32cubef4)
+		except:
+			print('ERROR in stm32cubef4')
 			exit()
 
 if __name__ == "__main__":

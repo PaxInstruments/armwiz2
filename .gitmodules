@@ -10,15 +10,15 @@
 [submodule "libraries/CMSIS"]
 	path = libraries/CMSIS
 	url = https://github.com/ARM-software/CMSIS
-[submodule "libraries/ST/STM32CubeF1"]
-	path = libraries/ST/STM32CubeF1
+[submodule "libraries/STM32CubeF1"]
+	path = libraries/STM32CubeF1
 	url = https://github.com/PaxInstruments/STM32CubeF1
-[submodule "libraries/ST/STM32CubeF2"]
-	path = libraries/ST/STM32CubeF2
+[submodule "libraries/STM32CubeF2"]
+	path = libraries/STM32CubeF2
 	url = https://github.com/PaxInstruments/STM32CubeF2
-[submodule "libraries/ST/STM32CubeF3"]
-	path = libraries/ST/STM32CubeF3
+[submodule "libraries/STM32CubeF3"]
+	path = libraries/STM32CubeF3
 	url = https://github.com/PaxInstruments/STM32CubeF3
-[submodule "libraries/ST/STM32CubeF4"]
-	path = libraries/ST/STM32CubeF4
+[submodule "libraries/STM32CubeF4"]
+	path = libraries/STM32CubeF4
 	url = https://github.com/PaxInstruments/STM32CubeF4
