@@ -147,11 +147,11 @@ def parseArguments():
 	parser.add_argument('-p','--projectname',
 		help='Specify project name via -p <projectname>',
 		metavar="<projectname>",
-		required=True)
+		required=False)
 	parser.add_argument('-t','--target',
 		help='Specify target microcontroller via -t <targetname>',
 		metavar="<targetname>",
-		required=True)
+		required=False)
 	parser.add_argument('--chibios',
 		help='Include ChibiOS libraries',
 		action="store_true",
@@ -228,64 +228,89 @@ def deployExample(arguments):
 	"""
 	# echoExample > $(pwd)/$1/src/${projectname}.cpp
 
-def deployChibiOS (arguments):
-	"""
-	deployChibiOS
-	"""
-	if arguments.chibios:
-		print('Copying ChibiOS libraries... ',end="")
-		sys.stdout.flush()
-		try:
-			makePath('%s/libraries/ChibiOS' % arguments.projectname)
-			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/ChibiOS/','%s/libraries/ChibiOS' % arguments.projectname])
-			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/libraries/ChibiOS','%s/.git/modules/libraries/ChibiOS' % arguments.projectname])
-			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
-			moduleFile.write("\n[submodule \"libraries/ChibiOS\"]\n\tpath = libraries/ChibiOS\n\turl = https://github.com/ChibiOS/ChibiOS.git\n")
-			moduleFile.close()
-			print('Okay')
-		except:
-			print('ERROR copying')
-			exit()
+class library(object):
+	"""Libraries in git."""
+	def __init__(self,name,gitName,parentDir):
+		self.name=name
+		self.gitName=gitName
+		self.parentDir=parentDir
+		self.libTargetDir='{0}/{1}/{2}/'.format('libraries/',self.parentDir,self.gitName)
+		self.libSourceDir='{0}/{1}/{2}/'.format('libraries/',self.parentDir,self.gitName)
+
+lib_chibios = library('ChibiOS','ChibiOS','.')
+lib_freertos = library('FreeRTOS','freertos','.')
+lib_mbed = library('mbed','mbed','.')
+
+def deployLibrary(arguments,library):
+	print('Copying {0} libraries...'.format(library.name), end="")
+	sys.stdout.flush()
+	try:
+		makePath(arguments.projectname+'/'+library.libTargetDir)
+		call(['rsync','-ac',library.libSourceDir,'{0}/{1}'.format(arguments.projectname,library.libTargetDir)])
+		call(['rsync','-ac','.git/modules/{0}'.format(library.libSourceDir),'{0}/.git/modules/{1}'.format(arguments.projectname,library.libTargetDir)])
+		print('Okay')
+	except:
+		print('ERROR copying')
+		exit()
+
+# def deployChibiOS (arguments):
+# 	"""
+# 	deployChibiOS
+# 	"""
+# 	if arguments.chibios:
+# 		print('Copying ChibiOS libraries... ',end="")
+# 		sys.stdout.flush()
+# 		try:
+# 			makePath('%s/libraries/ChibiOS' % arguments.projectname)
+# 			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/ChibiOS/','%s/libraries/ChibiOS' % arguments.projectname])
+# 			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/libraries/ChibiOS','%s/.git/modules/libraries/ChibiOS' % arguments.projectname])
+# 			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
+# 			moduleFile.write("\n[submodule \"libraries/ChibiOS\"]\n\tpath = libraries/ChibiOS\n\turl = https://github.com/ChibiOS/ChibiOS.git\n")
+# 			moduleFile.close()
+# 			print('Okay')
+# 		except:
+# 			print('ERROR copying')
+# 			exit()
 
 		
-def deployFreeRTOS (arguments):
-	"""
-	deployFreeRTOS
-	"""
-	if arguments.freertos:
-		print('Copying FreeRTOS libraries... ',end="")
-		sys.stdout.flush()
-		try:
-			makePath('%s/libraries/freertos' % arguments.projectname)
-			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/freertos/','%s/libraries/freertos' % arguments.projectname])
-			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/libraries/freertos','%s/.git/modules/libraries/freertos' % arguments.projectname])
-			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
-			moduleFile.write("\n[submodule \"libraries/freertos\"]\n\tpath = libraries/freertos\n\turl = https://github.com/PaxInstruments/freertos.git\n")
-			moduleFile.close()
-			print('Okay')
-		except:
-			print('ERROR copying')
-			exit()
+# def deployFreeRTOS (arguments):
+# 	"""
+# 	deployFreeRTOS
+# 	"""
+# 	if arguments.freertos:
+# 		print('Copying FreeRTOS libraries... ',end="")
+# 		sys.stdout.flush()
+# 		try:
+# 			makePath('%s/libraries/freertos' % arguments.projectname)
+# 			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/freertos/','%s/libraries/freertos' % arguments.projectname])
+# 			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/libraries/freertos','%s/.git/modules/libraries/freertos' % arguments.projectname])
+# 			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
+# 			moduleFile.write("\n[submodule \"libraries/freertos\"]\n\tpath = libraries/freertos\n\turl = https://github.com/PaxInstruments/freertos.git\n")
+# 			moduleFile.close()
+# 			print('Okay')
+# 		except:
+# 			print('ERROR copying')
+# 			exit()
 
 
-def deployMbed (arguments):
-	"""
-	deployMbed
-	"""
-	if arguments.mbed:
-		print('Copying mbed libraries... ',end="")
-		sys.stdout.flush()
-		try:
-			makePath('%s/libraries/mbed' % arguments.projectname)
-			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/mbed/','%s/libraries/mbed' % arguments.projectname])
-			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/libraries/mbed','%s/.git/modules/libraries/modules' % arguments.projectname])
-			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
-			moduleFile.write("\n[submodule \"libraries/mbed\"]\n\tpath = libraries/mbed\n\turl = https://github.com/mbedmicro/mbed.git\n")
-			moduleFile.close()
-			print('Okay')
-		except:
-			print('ERROR copying')
-			exit()
+# def deployMbed (arguments):
+# 	"""
+# 	deployMbed
+# 	"""
+# 	if arguments.mbed:
+# 		print('Copying mbed libraries... ',end="")
+# 		sys.stdout.flush()
+# 		try:
+# 			makePath('%s/libraries/mbed' % arguments.projectname)
+# 			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/mbed/','%s/libraries/mbed' % arguments.projectname])
+# 			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/libraries/mbed','%s/.git/modules/libraries/modules' % arguments.projectname])
+# 			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
+# 			moduleFile.write("\n[submodule \"libraries/mbed\"]\n\tpath = libraries/mbed\n\turl = https://github.com/mbedmicro/mbed.git\n")
+# 			moduleFile.close()
+# 			print('Okay')
+# 		except:
+# 			print('ERROR copying')
+# 			exit()
 
 
 ##################
@@ -336,14 +361,16 @@ def main():
 	if arguments.projectname:
 		makeProjectDirectoryTree(arguments)
 
+	# deployLibrary(arguments,lib_chibios)
+
 	if arguments.chibios == True:
-		deployChibiOS(arguments)
+		deployLibrary(arguments,lib_chibios)
 
 	if arguments.freertos == True:
-		deployFreeRTOS(arguments)
+		deployLibrary(arguments,lib_freertos)
 
 	if arguments.mbed == True:
-		deployMbed(arguments)
+		deployLibrary(arguments,lib_mbed)
 
 	print(arguments)
 	# print("Project name: %s" % arguments.projectname )
