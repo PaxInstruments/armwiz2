@@ -230,29 +230,36 @@ def deployExample(arguments):
 
 class library(object):
 	"""Libraries in git."""
-	def __init__(self,name,gitName,parentDir):
+	def __init__(self,name,gitName,parentDir,gitURL):
 		self.name=name
 		self.gitName=gitName
 		self.parentDir=parentDir
-		self.libTargetDir='{0}/{1}/{2}/'.format('libraries/',self.parentDir,self.gitName)
-		self.libSourceDir='{0}/{1}/{2}/'.format('libraries/',self.parentDir,self.gitName)
+		self.gitURL=gitURL
+		self.libTargetDir='{0}/{1}{2}'.format('libraries',self.parentDir,self.gitName)
+		self.libSourceDir='{0}/{1}{2}'.format('libraries',self.parentDir,self.gitName)
 
-lib_chibios = library('ChibiOS','ChibiOS','.')
-lib_freertos = library('FreeRTOS','freertos','.')
-lib_mbed = library('mbed','mbed','.')
+lib_chibios = library('ChibiOS','ChibiOS','','https://github.com/ChibiOS/ChibiOS.git')
+lib_freertos = library('FreeRTOS','freertos','','https://github.com/PaxInstruments/freertos.git')
+lib_mbed = library('mbed','mbed','','https://github.com/mbedmicro/mbed.git')
 
 def deployLibrary(arguments,library):
 	print('Copying {0} libraries...'.format(library.name), end="")
 	sys.stdout.flush()
-	try:
-		makePath(arguments.projectname+'/'+library.libTargetDir)
-		call(['rsync','-ac',library.libSourceDir,'{0}/{1}'.format(arguments.projectname,library.libTargetDir)])
-		call(['rsync','-ac','.git/modules/{0}'.format(library.libSourceDir),'{0}/.git/modules/{1}'.format(arguments.projectname,library.libTargetDir)])
+	makePath("{0}/{1}".format(arguments.projectname,library.libTargetDir))
+	call(['rsync','-ac','{0}/'.format(library.libSourceDir),'{0}/{1}/'.format(arguments.projectname,library.libTargetDir)])
+	call(['rsync','-ac','.git/modules/{0}/'.format(library.libSourceDir),'{0}/.git/modules/{1}/'.format(arguments.projectname,library.libTargetDir)])
+	moduleFile = open('{0}/.gitmodules'.format(arguments.projectname), 'a')
+	moduleFile.write("\n[submodule \"{0}\"]\n".format(library.libTargetDir))
+	moduleFile.write("\tpath = {0}\n".format(library.libTargetDir))
+	moduleFile.write("\turl = {0}\n".format(library.gitURL))
+	moduleFile.close()
+	try:	
 		print('Okay')
 	except:
 		print('ERROR copying')
 		exit()
-
+	call('cd {0}; git add .gitmodules; git add {1}; git submodule init'.format(arguments.projectname,library.libTargetDir),shell=True)
+	call("cd {0}; git commit -am 'armwiz added {1}'".format(arguments.projectname,library.name),shell=True)
 # def deployChibiOS (arguments):
 # 	"""
 # 	deployChibiOS
