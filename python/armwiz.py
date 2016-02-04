@@ -49,7 +49,9 @@ Armwiz docstring.
 # ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝ ╚══╝╚══╝ ╚═╝╚══════╝
 
 import subprocess
+from subprocess import call
 import os
+import sys
 import errno
 import argparse
 
@@ -137,28 +139,6 @@ def printHeader():
 	print("    ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝ ╚══╝╚══╝ ╚═╝╚══════╝")
 	print("                                      version",__version__ )
 
-def targetDetailPrint(targetBoard):
-	"""Print detail of the target board"""
-	# TODO Make object methods for these actions. For example:
-	#      'myBoard.print(name)' #prints the board name
-	print('Target:', targetBoard.name)
-	print('    Board manufacturer:',targetBoard.manufacturer.name)
-	print('    Board MCU:',targetBoard.mcu.name)
-	print('    MCU manufacturer:',targetBoard.mcu.manufacturer.name)
-	print('    Board website:',targetBoard.website)
-
-def makePath(path):
-	"""Make a directory path."""
-	try:
-		os.makedirs(path)
-	except OSError as exception:
-		if exception.errno == errno.EEXIST:
-			print('ERROR',path,'already exists.')
-		else:
-			print('ERROR: UNKNOWN')
-			raise
-		exit()
-
 def parseArguments():
 	"""Parses command line arguments. Returns array."""
 	parser = argparse.ArgumentParser(
@@ -197,34 +177,122 @@ def parseArguments():
 		action='version')
 	return parser.parse_args()
 
-def deployMakefile():
+def targetDetailPrint(targetBoard):
+	"""Print detail of the target board"""
+	# TODO Make object methods for these actions. For example:
+	#      'myBoard.print(name)' #prints the board name
+	print('Target:', targetBoard.name)
+	print('    Board manufacturer:',targetBoard.manufacturer.name)
+	print('    Board MCU:',targetBoard.mcu.name)
+	print('    MCU manufacturer:',targetBoard.mcu.manufacturer.name)
+	print('    Board website:',targetBoard.website)
+
+def makePath(path):
+	"""Make a directory path."""
+	try:
+		os.makedirs(path)
+	except OSError as exception:
+		if exception.errno == errno.EEXIST:
+			print('ERROR',path,'already exists.')
+		else:
+			print('ERROR: UNKNOWN')
+			raise
+		exit()
+
+def makeProjectDirectoryTree(arguments):
+	"""
+	Make project directory tree
+	Takes <projectname> as argument
+	"""
+	makePath(arguments.projectname)
+	makePath('%s/binary' % arguments.projectname)
+	makePath('%s/include' % arguments.projectname)
+	makePath('%s/libraries' % arguments.projectname)
+	makePath('%s/source' % arguments.projectname)
+	makePath('%s/tools' % arguments.projectname)
+	call(['git','init',arguments.projectname])
+
+def deployMakefile(arguments):
 	"""
 	# Generate the Makefile
 	# Takes <projectname> as argument
 	"""
 	# echoMakefile > $(pwd)/$1/Makefile
 
-def deployExample():
+def deployExample(arguments):
 	"""
 	Generate the Makefile
 	Takes <projectname> as argument
 	"""
 	# echoExample > $(pwd)/$1/src/${projectname}.cpp
 
-def deployChibiOS ():
+def deployChibiOS (arguments):
 	"""
-	deployMbed
+	deployChibiOS
 	"""
+	if arguments.chibios:
+		print('Copying ChibiOS libraries... ',end="")
+		sys.stdout.flush()
+		try:
+			makePath('%s/libraries/ChibiOS' % arguments.projectname)
+			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/ChibiOS/','%s/libraries/ChibiOS' % arguments.projectname])
+			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/chibios','%s/.git/chibios' % arguments.projectname])
+			gitFile = open('%s/libraries/ChibiOS/.git' % arguments.projectname, 'w')
+			gitFile.write("gitdir: ../../.git/modules/chibios\n")
+			gitFile.close()
+			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
+			moduleFile.write("\n[submodule \"ChibiOS\"]\n\tpath = libraries/ChibiOS\n\turl = https://github.com/ChibiOS/ChibiOS.git\n")
+			moduleFile.close()
+			print('Okay')
+		except:
+			print('ERROR copying')
+			exit()
 
-def deployFreeRTOS ():
+		
+def deployFreeRTOS (arguments):
 	"""
-	deployMbed
+	deployFreeRTOS
 	"""
+	if arguments.freertos:
+		print('Copying FreeRTOS libraries... ',end="")
+		sys.stdout.flush()
+		try:
+			makePath('%s/libraries/freertos' % arguments.projectname)
+			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/freertos/','%s/libraries/freertos' % arguments.projectname])
+			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/freertos','%s/.git/modules' % arguments.projectname])
+			gitFile = open('%s/libraries/freertos/.git' % arguments.projectname, 'w')
+			gitFile.write("gitdir: ../../.git/modules/freertos\n")
+			gitFile.close()
+			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
+			moduleFile.write("\n[submodule \"freertos\"]\n\tpath = libraries/freertos\n\turl = https://github.com/PaxInstruments/freertos.git\n")
+			moduleFile.close()
+			print('Okay')
+		except:
+			print('ERROR copying')
+			exit()
 
-def deployMbed ():
+
+def deployMbed (arguments):
 	"""
 	deployMbed
 	"""
+	if arguments.mbed:
+		print('Copying mbed libraries... ',end="")
+		sys.stdout.flush()
+		try:
+			makePath('%s/libraries/mbed' % arguments.projectname)
+			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/mbed/','%s/libraries/mbed' % arguments.projectname])
+			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/mbed','%s/.git/modules' % arguments.projectname])
+			gitFile = open('%s/libraries/mbed/.git' % arguments.projectname, 'w')
+			gitFile.write("gitdir: ../../.git/modules/mbed\n")
+			gitFile.close()
+			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
+			moduleFile.write("\n[submodule \"mbed\"]\n\tpath = libraries/mbed\n\turl = https://github.com/mbedmicro/mbed.git\n")
+			moduleFile.close()
+			print('Okay')
+		except:
+			print('ERROR copying')
+			exit()
 
 
 ##################
@@ -265,38 +333,6 @@ board_stmt3f4discovery = board('STM32F4 Discovery',manufacturer_ST,mcu_stm32f407
 board_nucleo_f411re = board('Nucleo-F411RE',manufacturer_ST,mcu_stm32f411ret6,'http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/LN1847/PF260320')
 board_pyboard_v10 = board('PyBoard v1.0',manufacturer_micropython,mcu_stm32f405rgt6,'http://docs.micropython.org/en/latest/pyboard/hardware/index.html')
 
-
-def makeProjectDirectoryTree(arguments):
-	"""
-	Make project directory tree
-	Takes <projectname> as argument
-	"""
-	makePath(arguments.projectname)
-	if arguments.chibios:
-		print('Copying ChibiOS libraries... ',end="")
-		try:
-			makePath('%s/libraries/ChibiOS' % arguments.projectname)
-			print('Okay')
-		except:
-			print('ERROR copying')
-			exit()
-	if arguments.freertos:
-		print('Copying ChibiOS libraries... ',end="")
-		try:
-			makePath('%s/libraries/FreeRTOS' % arguments.projectname)
-			print('Okay')
-		except:
-			print('ERROR copying')
-			exit()
-	if arguments.mbed:
-		print('Copying ChibiOS libraries... ',end="")
-		try:
-			makePath('%s/libraries/mbed' % arguments.projectname)
-			print('Okay')
-		except:
-			print('ERROR copying')
-			exit()
-
 def main():
 	"""The main program loop"""
 	arguments = parseArguments()
@@ -307,15 +343,19 @@ def main():
 	if arguments.projectname:
 		makeProjectDirectoryTree(arguments)
 
+	if arguments.chibios == True:
+		deployChibiOS(arguments)
+
+	if arguments.freertos == True:
+		deployFreeRTOS(arguments)
+
+	if arguments.mbed == True:
+		deployMbed(arguments)
+
 	print(arguments)
-	print("Project name: %s" % arguments.projectname )
-	print("Target name: %s" % arguments.target )
-	directory = "tempDir"
-
-
-	# makePath("tempDir")
-	# makePath("tempDir/libraries")
-	# makePath("tempDir/libraries/CMSIS")
+	# print("Project name: %s" % arguments.projectname )
+	# print("Target name: %s" % arguments.target )
+	# directory = "tempDir"
 
 	# targetDetailPrint(board_atmel_samd21xplainedpro)
 	# targetDetailPrint(board_china_130811_v100)
