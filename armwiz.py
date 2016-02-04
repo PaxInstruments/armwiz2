@@ -206,7 +206,7 @@ def makeProjectDirectoryTree(arguments):
 	Make project directory tree
 	Takes <projectname> as argument
 	"""
-	print('Creating {0}/ directory...'.format(arguments.projectname), end="")
+	print('Creating {0}/ directory:\n'.format(arguments.projectname), end="")
 	sys.stdout.flush()
 	try:
 		makePath(arguments.projectname)
@@ -215,7 +215,10 @@ def makeProjectDirectoryTree(arguments):
 		makePath('%s/libraries' % arguments.projectname)
 		makePath('%s/source' % arguments.projectname)
 		makePath('%s/tools' % arguments.projectname)
-		call('git -q init {0}'.format(arguments.projectname),shell=True)
+		try:
+			call('git init {0}'.format(arguments.projectname),shell=True)
+		except:
+			exit()
 		makePath('%s/.git/modules' % arguments.projectname)
 		makePath('%s/.git/modules/libraries' % arguments.projectname)
 		print('Okay')
