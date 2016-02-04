@@ -1,0 +1,24 @@
+[submodule "libraries/mbed"]
+	path = libraries/mbed
+	url = https://github.com/mbedmicro/mbed.git
+[submodule "libraries/freertos"]
+	path = libraries/freertos
+	url = https://github.com/PaxInstruments/freertos.git
+[submodule "libraries/ChibiOS"]
+	path = libraries/ChibiOS
+	url = https://github.com/ChibiOS/ChibiOS.git
+[submodule "libraries/CMSIS"]
+	path = libraries/CMSIS
+	url = https://github.com/ARM-software/CMSIS
+[submodule "libraries/ST/STM32CubeF1"]
+	path = libraries/ST/STM32CubeF1
+	url = https://github.com/PaxInstruments/STM32CubeF1
+[submodule "libraries/ST/STM32CubeF2"]
+	path = libraries/ST/STM32CubeF2
+	url = https://github.com/PaxInstruments/STM32CubeF2
+[submodule "libraries/ST/STM32CubeF3"]
+	path = libraries/ST/STM32CubeF3
+	url = https://github.com/PaxInstruments/STM32CubeF3
+[submodule "libraries/ST/STM32CubeF4"]
+	path = libraries/ST/STM32CubeF4
+	url = https://github.com/PaxInstruments/STM32CubeF4

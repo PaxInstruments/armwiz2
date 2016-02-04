@@ -211,6 +211,8 @@ def makeProjectDirectoryTree(arguments):
 	makePath('%s/source' % arguments.projectname)
 	makePath('%s/tools' % arguments.projectname)
 	call(['git','init',arguments.projectname])
+	makePath('%s/.git/modules' % arguments.projectname)
+	makePath('%s/.git/modules/libraries' % arguments.projectname)
 
 def deployMakefile(arguments):
 	"""
@@ -236,12 +238,9 @@ def deployChibiOS (arguments):
 		try:
 			makePath('%s/libraries/ChibiOS' % arguments.projectname)
 			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/ChibiOS/','%s/libraries/ChibiOS' % arguments.projectname])
-			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/chibios','%s/.git/chibios' % arguments.projectname])
-			gitFile = open('%s/libraries/ChibiOS/.git' % arguments.projectname, 'w')
-			gitFile.write("gitdir: ../../.git/modules/chibios\n")
-			gitFile.close()
+			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/libraries/ChibiOS','%s/.git/modules/libraries/ChibiOS' % arguments.projectname])
 			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
-			moduleFile.write("\n[submodule \"ChibiOS\"]\n\tpath = libraries/ChibiOS\n\turl = https://github.com/ChibiOS/ChibiOS.git\n")
+			moduleFile.write("\n[submodule \"libraries/ChibiOS\"]\n\tpath = libraries/ChibiOS\n\turl = https://github.com/ChibiOS/ChibiOS.git\n")
 			moduleFile.close()
 			print('Okay')
 		except:
@@ -259,12 +258,9 @@ def deployFreeRTOS (arguments):
 		try:
 			makePath('%s/libraries/freertos' % arguments.projectname)
 			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/freertos/','%s/libraries/freertos' % arguments.projectname])
-			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/freertos','%s/.git/modules' % arguments.projectname])
-			gitFile = open('%s/libraries/freertos/.git' % arguments.projectname, 'w')
-			gitFile.write("gitdir: ../../.git/modules/freertos\n")
-			gitFile.close()
+			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/libraries/freertos','%s/.git/modules/libraries/freertos' % arguments.projectname])
 			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
-			moduleFile.write("\n[submodule \"freertos\"]\n\tpath = libraries/freertos\n\turl = https://github.com/PaxInstruments/freertos.git\n")
+			moduleFile.write("\n[submodule \"libraries/freertos\"]\n\tpath = libraries/freertos\n\turl = https://github.com/PaxInstruments/freertos.git\n")
 			moduleFile.close()
 			print('Okay')
 		except:
@@ -282,12 +278,9 @@ def deployMbed (arguments):
 		try:
 			makePath('%s/libraries/mbed' % arguments.projectname)
 			call(['rsync','-ac',"--exclude='.DS_Store'",'../libraries/mbed/','%s/libraries/mbed' % arguments.projectname])
-			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/mbed','%s/.git/modules' % arguments.projectname])
-			gitFile = open('%s/libraries/mbed/.git' % arguments.projectname, 'w')
-			gitFile.write("gitdir: ../../.git/modules/mbed\n")
-			gitFile.close()
+			call(['rsync','-ac',"--exclude='.DS_Store'",'../.git/modules/libraries/mbed','%s/.git/modules/libraries/modules' % arguments.projectname])
 			moduleFile = open('%s/.gitmodules' % arguments.projectname, 'a')
-			moduleFile.write("\n[submodule \"mbed\"]\n\tpath = libraries/mbed\n\turl = https://github.com/mbedmicro/mbed.git\n")
+			moduleFile.write("\n[submodule \"libraries/mbed\"]\n\tpath = libraries/mbed\n\turl = https://github.com/mbedmicro/mbed.git\n")
 			moduleFile.close()
 			print('Okay')
 		except:
