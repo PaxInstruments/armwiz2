@@ -7,7 +7,7 @@ def main():
 	config.read('libraries.config')
 
 	for library in config.sections():
-		print(config.get(library,'name'), end="")
+		print(config.get(library,'name'), end = "")
 		print(': ',end="")
 		print(config.get(library,'gitURL'))
 
