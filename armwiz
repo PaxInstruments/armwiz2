@@ -134,7 +134,16 @@ class target(object):
 		self.manufacturer=manufacturer
 		self.mcu=mcu
 
-class library(object):
+class Library(object):
+	"""Libraries in git."""
+	def __init__(self,name,gitName,gitURL):
+		self.name=name
+		self.gitName=gitName
+		self.gitURL=gitURL
+		self.libTargetDir='{0}/{1}'.format('libraries',self.gitName)
+		self.libSourceDir='{0}/{1}'.format('libraries',self.gitName)
+
+class library2(object):
 	"""Libraries in git."""
 	def __init__(self,name,gitName,gitURL):
 		self.name=name
@@ -452,11 +461,16 @@ def main():
 
 	if arguments.library != None:
 		for option in arguments.library:
-		#	__init__(name,gitName,gitURL)
-			thisGitOptionName = libraryConfig.get(option,'option')
+			print('NOTE arguments.library: {}'.format(arguments.library))
+			optionName = libraryConfig.get(option,'option')
 			thisGitName = libraryConfig.get(option,'gitName')
 			thisGitURL = libraryConfig.get(option,'gitURL')
-			thisLibrary = library(thisGitOptionName,thisGitName,thisGitURL)
+			print('NOTE arguments.library: {}'.format(optionName))
+			print('NOTE arguments.library: {}'.format(thisGitName))
+			print('NOTE arguments.library: {}'.format(thisGitURL))
+
+			thisLibrary = Library(optionName,thisGitName,thisGitURL)
+			print('here')
 			try:
 				deployLibrary(arguments.projectname,thisLibrary)
 			except:
