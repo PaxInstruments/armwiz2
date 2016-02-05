@@ -21,6 +21,25 @@
 # TODO Make armwiz capable of running form any directory. All tasks are done
 #      from the current directory.
 # TODO Make function to add a module into the armwiz git repo
+# TODO Make function to checkout the latest version or a specified version of 
+#      each library. Maybe have an entry in the libraries.config file
+# TODO Function to generate a README file. Cat in details about the project
+#      configuration, git versions, etc..
+# TODO Function to generate linker scripts. It would be nice if this functionality
+#      could be used independently of the rest of armwiz.
+# TODO Function to download specific libraries from the libraries list without
+#      necessarily including them in a project. That is the workaround now.
+# TODO List the download status of each library.
+# TODO Project generator will make a bare ARM project that does not use any
+#      pripherial libraries. Just i++ and use a debugger to view it.
+# TODO Add function to download and compile the arm-none-eabi toolchain
+# TODO Figure out a way to include a toolchain or download a toolchain with
+#      armwiz.
+# TODO Function to generate the Makefile
+# TODO Reach parity with the code that CubeMX generates. I should output
+#      the same files.
+# TODO If armwiz is pointed to an existing project, it should add any
+#      specified libraries. Directly use git submodule add ...
 
 ## Library-specific TODO List
 # TODO FreRTOS: Generate FreeRTOSConfig.h
