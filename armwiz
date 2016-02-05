@@ -206,7 +206,6 @@ def parseArguments():
 	parser.add_argument('-p','--projectname',
 		help='Specify project name via -p <projectname>',
 		metavar="<projectname>",
-		default='helloArmwiz',
 		required=False)
 	parser.add_argument('-t','--target',
 		help='Specify target microcontroller via -t <targetname>',
@@ -241,7 +240,7 @@ def parseArguments():
 	parser.add_argument('--version',
 		version='%(prog)s {version}'.format(version=__version__),
 		action='version')
-	return parser.parse_args()
+	return parser
 
 def makePath(path):
 	# TODO Add appropriate docstring
@@ -395,7 +394,8 @@ def is_valid_file(parser, arg):
 def main():
 	# TODO Add appropriate docstring
 	"""The main program loop"""
-	arguments = parseArguments()
+	parser = parseArguments()
+	arguments = parser.parse_args()
 
 	if arguments.L == True:
 		try:
@@ -421,6 +421,10 @@ def main():
 			except:
 				raise
 		exit()
+
+	if arguments.projectname == None:
+		parser.print_help()
+
 
 	# Load the libraries configuration file
 	if arguments.library != None:
