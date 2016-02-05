@@ -284,7 +284,7 @@ def makeProjectDirectoryTree(arguments):
 		print('ERROR')
 		raise
 	try:
-		call('git init {0}'.format(arguments.projectname),shell=True)
+		call('git init -q {0}'.format(arguments.projectname),shell=True)
 	except:
 		print('ERROR')
 		raise
@@ -312,8 +312,8 @@ def deployExample(arguments):
 	# TODO Make a directory with a bunch of different examples.
 
 def deployLibrary(projectname,library):
-	"""Deploy a library class boject"""
-	print('Copying {0} libraries... '.format(library.name), end="")
+	"""Deploy a library class object"""
+	print('Copying {} libraries... '.format(library.name), end="")
 	sys.stdout.flush()
 	try:
 		makePath("{0}/{1}".format(projectname,library.libTargetDir))
@@ -326,11 +326,25 @@ def deployLibrary(projectname,library):
 		moduleFile.write("\turl = {0}\n".format(library.gitURL))
 		moduleFile.close()
 		print('Okay')
+		sys.stdout.flush()
 	except:
 		print('ERROR copying')
 		exit()
-	call('cd {0}; git add .gitmodules; git add {1}; git submodule init'.format(projectname,library.libTargetDir),shell=True)
-	call("cd {0}; git commit -am 'armwiz added {1}'".format(projectname,library.name),shell=True)
+	try:
+		print('Adding {} to git... '.format(library.name),end='')
+		sys.stdout.flush()
+		call('cd {0}; git add .gitmodules; git add {1}; git submodule init -q '.format(projectname,library.libTargetDir),shell=True)
+	except:
+		print('Error')
+		print("Error initializing submodule")
+	try:
+		sys.stdout.flush()
+		call("cd {0}; git commit -qam 'armwiz added {1}'".format(projectname,library.name),shell=True)
+		print('Okay')
+		sys.stdout.flush()
+	except:
+		pritn('Error')
+		print('Error Committing changes')
 
 ##################
 ## Object lists ##
@@ -461,16 +475,10 @@ def main():
 
 	if arguments.library != None:
 		for option in arguments.library:
-			print('NOTE arguments.library: {}'.format(arguments.library))
 			optionName = libraryConfig.get(option,'option')
 			thisGitName = libraryConfig.get(option,'gitName')
 			thisGitURL = libraryConfig.get(option,'gitURL')
-			print('NOTE arguments.library: {}'.format(optionName))
-			print('NOTE arguments.library: {}'.format(thisGitName))
-			print('NOTE arguments.library: {}'.format(thisGitURL))
-
 			thisLibrary = Library(optionName,thisGitName,thisGitURL)
-			print('here')
 			try:
 				deployLibrary(arguments.projectname,thisLibrary)
 			except:
