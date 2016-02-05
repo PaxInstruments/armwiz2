@@ -397,6 +397,14 @@ def main():
 	parser = parseArguments()
 	arguments = parser.parse_args()
 
+
+	if arguments.wizard == True:
+		try:
+			printWizard()
+		except:
+			Print('Mysterious wizardly error. Return from whence you came!')
+			raise
+
 	if arguments.L == True:
 		try:
 			libraryConfigFileName = 'libraries.config'
@@ -412,6 +420,8 @@ def main():
 		except:
 			raise
 			exit()
+		print('  -l <library>  Library Description')
+		print('  ------------  --------------------------------')
 		for library in libraryConfig:
 			try:
 				# TODO Generate the righ justification value by looking at the config file
@@ -459,14 +469,6 @@ def main():
 				exit()
 
 	# If we get to this point, all the library options are valid
-
-	if arguments.wizard == True:
-		try:
-			printWizard()
-		except:
-			Print('Mysterious wizardly error. Return from whence you came!')
-			raise
-			exit()
 
 	# TODO Add a function here to confirm all the options are valid
 	# TODO Add a function here to determine if the project can be made
