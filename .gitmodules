@@ -22,3 +22,9 @@
 [submodule "libraries/STM32CubeF4"]
 	path = libraries/STM32CubeF4
 	url = https://github.com/PaxInstruments/STM32CubeF4
+[submodule "libraries/u8glib"]
+	path = libraries/u8glib
+	url = https://github.com/olikraus/u8glib.git
+[submodule "libraries/m2tklib"]
+	path = libraries/m2tklib
+	url = https://github.com/olikraus/m2tklib.git
