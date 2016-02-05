@@ -315,11 +315,13 @@ def deployLibrary(projectname,library):
 	"""Deploy a library class object"""
 	print('Copying {} libraries... '.format(library.name), end="")
 	sys.stdout.flush()
+	makePath("{0}/{1}".format(projectname,library.libTargetDir))
 	try:
-		makePath("{0}/{1}".format(projectname,library.libTargetDir))
-		#TODO Rewrite the next two lines using one string and 'shell=True'
-		call(['rsync','-ac','{0}/'.format(library.libSourceDir),'{0}/{1}/'.format(projectname,library.libTargetDir)])
-		call(['rsync','-ac','.git/modules/{0}/'.format(library.libSourceDir),'{0}/.git/modules/{1}/'.format(projectname,library.libTargetDir)])
+		call('rsync -ac {}/ {}/{}/'.format(library.libSourceDir,projectname,library.libTargetDir),shell=True)
+	except:
+		print('ERROR using rsync to copy {}'.format(library.name))
+	try:
+		call('rsync -ac .git/modules/{}/ {}/.git/modules/{}/'.format(library.libSourceDir,projectname,library.libTargetDir),shell=True)
 		moduleFile = open('{0}/.gitmodules'.format(projectname), 'a')
 		moduleFile.write("\n[submodule \"{0}\"]\n".format(library.libTargetDir))
 		moduleFile.write("\tpath = {0}\n".format(library.libTargetDir))
