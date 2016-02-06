@@ -18,7 +18,8 @@ CFLAGS+=-D STM32F10X_HD
 
 
 #stm32-flash
-CFLAGS+=-Wl,-T,stm32_flash.ld
+CFLAGS+=-Wl,-T,STM32F103XE_FLASH.ld
+#CFLAGS+=-Wl,-T,stm32_flash.ld
 
 #======================================================================#
 #Libraries
@@ -28,6 +29,7 @@ CFLAGS+=-Wl,-T,stm32_flash.ld
 
 #CMSIS libraries
 CFLAGS+=-Iinclude
+#CFLAGS+=-Ilibraries/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/
 #======================================================================#
 #setup system clock
 SRC=./system_stm32f10x.c
@@ -41,7 +43,7 @@ SRC+=./main.c \
 
 #======================================================================#
 #STM32 startup file
-STARTUP=./startup_stm32f10x_hd.s
+STARTUP=./startup_stm32f103xe.s
 
 
 #======================================================================#
@@ -53,7 +55,7 @@ all:$(BIN_IMAGE)
 $(BIN_IMAGE):$(EXECUTABLE)
 	$(OBJCOPY) -O binary $^ $@
 
-STARTUP_OBJ = startup_stm32f10x_hd.o
+STARTUP_OBJ = startup_stm32f103xe.o
 
 $(STARTUP_OBJ): $(STARTUP) 
 	$(CC) $(CFLAGS) $^ -c $(STARTUP)
