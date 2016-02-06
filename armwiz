@@ -7,13 +7,14 @@
 #   TODO main.c
 #   TODO Makefile
 #   Done STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/gcc/startup_stm32f103xe.s
-#   TODO STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/gcc/linker/STM32F103XE_FLASH.ld
+#   Done STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/gcc/linker/STM32F103XE_FLASH.ld
 #   TODO The config file
 #   TODO STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/system_stm32f1xx.c
 
 #   TODO hello/libraries/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h
 
 ## Project TODO List
+# TODO Function copying the linker script should copy the correct linker script.
 # TODO Add a function to pull in the desired submodules as they are needed.
 # TODO Make git repo initilization command line option
 # TODO If git is not present, do not initialize a git repo
