@@ -246,6 +246,15 @@ def parseArguments():
 		action='version')
 	return parser
 
+def copySTM103Files(projectname):
+	call('cp resources/gpio/main.c {}/'.format(projectname),shell=True)
+	call('cp resources/gpio/Makefile {}/'.format(projectname),shell=True)
+	call('cp resources/gpio/startup_stm32f10x_hd.s {}/'.format(projectname),shell=True)
+	call('cp resources/gpio/stm32_flash.ld {}/'.format(projectname),shell=True)
+	call('cp resources/gpio/stm32f10x_conf.h {}/'.format(projectname),shell=True)
+	call('cp resources/gpio/system_stm32f10x.c {}/'.format(projectname),shell=True)
+	call('cp resources/gpio/include/* {}/include/'.format(projectname),shell=True)
+
 def makePath(path):
 	# TODO Add appropriate docstring
 	"""Make a directory path."""
@@ -503,6 +512,8 @@ def main():
 			except:
 				print("Oops! I couldn't copy {0}".format(option))
 				raise
+
+	copySTM103Files(arguments.projectname)
 
 if __name__ == "__main__":
 	# TODO Read about python file structure
