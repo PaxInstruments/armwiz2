@@ -29,6 +29,7 @@ CFLAGS+=-Wl,-T,STM32F103XE_FLASH.ld
 
 #CMSIS libraries
 CFLAGS+=-Iinclude
+CFLAGS+=-Ilibraries/STM32CubeF1/Drivers/CMSIS/Include/
 #CFLAGS+=-Ilibraries/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include/
 #======================================================================#
 #setup system clock
